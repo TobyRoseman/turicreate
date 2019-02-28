@@ -1,6 +1,6 @@
 Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
 
-[![Build Status](https://travis-ci.com/apple/turicreate.svg?branch=master)](https://travis-ci.com/apple/turicreate/branches)
+<img align="right" src="https://travis-ci.com/apple/turicreate.svg?branch=master" alt="Build Status" width="100">
 
 <img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">
 
