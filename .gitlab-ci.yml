@@ -233,7 +233,7 @@ test_cpp_linux:
     - date
     - source deps/env/bin/activate
     - date
-    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=`pwd`/release/src/unity:`pwd`/release/src/unity/python/turicreate:`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - date
     - cd release/src
@@ -241,8 +241,6 @@ test_cpp_linux:
     - date
     - cd ../test
     - tar xvf ../../cxxtest_binaries.tar
-    - date
-    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
     - date
     - python ../../scripts/run_cpp_tests.py -j 1
     - date
@@ -261,7 +259,7 @@ test_cpp_mac_10_13:
     - date
     - source deps/env/bin/activate
     - date
-    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=`pwd`/release/src/unity:`pwd`/release/src/unity/python/turicreate:`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - date
     - cd release/src
@@ -269,7 +267,6 @@ test_cpp_mac_10_13:
     - date
     - cd ../test
     - tar xvf ../../cxxtest_binaries.tar
-    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
     - date
     - python ../../scripts/run_cpp_tests.py -j 1
     - date
@@ -288,7 +285,7 @@ test_cpp_mac_10_14:
     - date
     - source deps/env/bin/activate
     - date
-    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=`pwd`/release/src/unity:`pwd`/release/src/unity/python/turicreate:`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - date
     - cd release/src
@@ -296,7 +293,6 @@ test_cpp_mac_10_14:
     - date
     - cd ../test
     - tar xvf ../../cxxtest_binaries.tar
-    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
     - date
     - python ../../scripts/run_cpp_tests.py -j 1
     - date
