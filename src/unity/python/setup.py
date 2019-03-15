@@ -150,6 +150,7 @@ if __name__ == '__main__':
                     'Turi Create Visualization.app/Contents/Resources/build/static/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/media/*',
                     'Turi Create Visualization.app/Contents/Frameworks/*',
 
                      # Linux visualization
@@ -175,6 +176,8 @@ if __name__ == '__main__':
         long_description=long_description,
         classifiers=classifiers,
         install_requires=[
+            "numba == 0.42.0",
+            "llvmlite == 0.27.0",
             "decorator >= 4.0.9",
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
@@ -183,6 +186,7 @@ if __name__ == '__main__':
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
             "scipy >= 0.14.0",
+            "six >= 1.10.0",
             "resampy == 0.2.1",
             "numpy"
         ],

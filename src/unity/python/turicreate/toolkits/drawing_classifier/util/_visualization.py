@@ -20,7 +20,7 @@ def draw_strokes(stroke_based_drawings):
         of points, and each point is represented as a dictionary
         with two keys, "x" and "y". A single stroke-based drawing
         is also supported, in which case, the type of the input
-        would be list
+        would be list.
         
     Returns
     -------
@@ -31,10 +31,12 @@ def draw_strokes(stroke_based_drawings):
 
     """
     single_input = False
-    if type(stroke_based_drawings) != _tc.SArray and type(stroke_based_drawings) != list:
+    if (type(stroke_based_drawings) != _tc.SArray 
+        and type(stroke_based_drawings) != list):
         raise _ToolkitError("Input to draw_strokes must be of type " 
             + "turicreate.SArray or list (for a single stroke-based drawing)")
-    if type(stroke_based_drawings) == _tc.SArray and stroke_based_drawings.dtype != list:
+    if (type(stroke_based_drawings) == _tc.SArray 
+        and stroke_based_drawings.dtype != list):
         raise _ToolkitError("SArray input to draw_strokes must have dtype " 
             + "list. Each element in the SArray should be a list of strokes, " 
             + "where each stroke is a list of points, " 

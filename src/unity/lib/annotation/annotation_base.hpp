@@ -20,7 +20,7 @@
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
-namespace annotate_spec = TuriCreate::Annotation::Specification;
+#include <unity/lib/annotation/utils.hpp>
 
 namespace turi {
 namespace annotate {
@@ -76,6 +76,8 @@ public:
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
+  virtual void cast_annotations() = 0;
+
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -116,7 +118,8 @@ private:
                             ::google::protobuf::MessageLite, T>::value>::type>
   std::string __serialize_proto(T message);
 
-  std::string __parse_proto_and_respond(std::string& input);
+  std::string __parse_proto_and_respond(std::string &input);
+
 };
 
 } // namespace annotate
