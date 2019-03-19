@@ -43,8 +43,17 @@ class VGGishFeatureExtractor(object):
         from .vggish_input import waveform_to_examples
         import numpy as np
 
-        last_progress_update = _time.time()
+         def preprocessing(raw_data):
+             scaled_data = audio_dict['data'] / 32768.0
+             return waveform_to_examples(scaled_data, audio_dict['sample_rate'])
+        
+         last_progress_update = _time.time()
+         preprocessed_data = audio_data.apply(preprocessing)
 
+         import ipdb
+         ipdb.set_trace()
+
+        '''
         # Can't run as a ".apply(...)" due to numba.jit decorator issue:
         # https://github.com/apple/turicreate/issues/1216
         preprocessed_data, output_labels = [], []
@@ -62,6 +71,7 @@ class VGGishFeatureExtractor(object):
                 last_progress_update = _time.time()
 
         return np.asarray(preprocessed_data), np.asarray(output_labels)
+        '''
 
     @staticmethod
     def _build_net():
