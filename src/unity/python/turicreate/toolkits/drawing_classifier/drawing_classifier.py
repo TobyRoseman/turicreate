@@ -143,6 +143,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
 
+    if batch_size is not None and not isinstance(batch_size, int):
+        raise TypeError("'batch_size' must be an integer >= 1")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("'batch_size' must be >= 1")
+    if max_iterations is not None and not isinstance(max_iterations, int):
+        raise TypeError("'max_iterations' must be an integer >= 1")
+    if max_iterations is not None and max_iterations < 1:
+        raise ValueError("'max_iterations' must be >= 1")
+
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
@@ -586,33 +595,33 @@ class DrawingClassifier(_CustomModel):
         Parameters
         ----------
         dataset : SFrame
-        Dataset of new observations. Must include columns with the same
-        names as the feature and target columns used for model training.
-        Additional columns are ignored.
+            Dataset of new observations. Must include columns with the same
+            names as the feature and target columns used for model training.
+            Additional columns are ignored.
         
-        metric : str optional
-        Name of the evaluation metric. Possible values are:
+        metric : str, optional
+            Name of the evaluation metric. Possible values are:
+            
+            - 'auto'             : Returns all available metrics.
+            - 'accuracy'         : Classification accuracy (micro average).
+            - 'auc'              : Area under the ROC curve (macro average)
+            - 'precision'        : Precision score (macro average)
+            - 'recall'           : Recall score (macro average)
+            - 'f1_score'         : F1 score (macro average)
+            - 'confusion_matrix' : An SFrame with counts of possible 
+                                   prediction/true label combinations.
+            - 'roc_curve'        : An SFrame containing information needed for an
+                                   ROC curve
         
-        - 'auto'             : Returns all available metrics.
-        - 'accuracy'         : Classification accuracy (micro average).
-        - 'auc'              : Area under the ROC curve (macro average)
-        - 'precision'        : Precision score (macro average)
-        - 'recall'           : Recall score (macro average)
-        - 'f1_score'         : F1 score (macro average)
-        - 'confusion_matrix' : An SFrame with counts of possible 
-                               prediction/true label combinations.
-        - 'roc_curve'        : An SFrame containing information needed for an
-                               ROC curve
-        
-        verbose : bool optional
-        If True, prints prediction progress.
+        verbose : bool, optional
+            If True, prints prediction progress.
 
         Returns
         -------
         out : dict
-        Dictionary of evaluation results where the key is the name of the
-        evaluation metric (e.g. `accuracy`) and the value is the evaluation
-        score.
+            Dictionary of evaluation results where the key is the name of the
+            evaluation metric (e.g. `accuracy`) and the value is the evaluation
+            score.
         
         See Also
         ----------
@@ -622,13 +631,13 @@ class DrawingClassifier(_CustomModel):
         ----------
         .. sourcecode:: python
         
-        >>> results = model.evaluate(data)
-        >>> print(results['accuracy'])
+          >>> results = model.evaluate(data)
+          >>> print(results['accuracy'])
         """
 
         if self.target not in dataset.column_names():
-            raise _ToolkitError("Dataset provided to evaluate does not have " 
-                + "ground truth in the " + self.target + " column.")
+            raise _ToolkitError("Must provide ground truth column, '" 
+                + self.target + "' in the evaluation dataset.")
 
         predicted = self._predict_with_probabilities(dataset, batch_size, verbose)
 
@@ -685,6 +694,7 @@ class DrawingClassifier(_CustomModel):
 
         output_type : {'probability', 'rank'}, optional
             Choose the return type of the prediction:
+
             - `probability`: Probability associated with each label in the 
                              prediction.
             - `rank`       : Rank associated with each label in the prediction.
@@ -777,8 +787,9 @@ class DrawingClassifier(_CustomModel):
             in which case it is a bitmap-based drawing input,
             or of type list, in which case it is a stroke-based drawing input.
 
-        output_type : {'probability', 'class', 'probability_vector'} optional
+        output_type : {'probability', 'class', 'probability_vector'}, optional
             Form of the predictions which are one of:
+            
             - 'class': Class prediction. For multi-class classification, this
               returns the class with maximum probability.
             - 'probability': Prediction probability associated with the True
@@ -792,7 +803,7 @@ class DrawingClassifier(_CustomModel):
             have a powerful computer, increasing this value may improve
             performance.
 
-        verbose : bool optional
+        verbose : bool, optional
             If True, prints prediction progress.
 
         Returns
