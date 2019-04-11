@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Deployment to Core ML · GitBook</title>
+        <title>Advanced Usage · GitBook</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -62,10 +62,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../image_classifier/" />
+    <link rel="next" href="export-coreml.html" />
     
     
-    <link rel="prev" href="choosing-a-model.html" />
+    <link rel="prev" href="how-it-works.html" />
     
 
     <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
@@ -274,9 +274,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="./">
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/">
             
-                <a href="./">
+                <a href="../recommender/">
             
                     
                     Recommender systems
@@ -288,9 +288,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1.1" data-path="using-trained-models.html">
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
             
-                <a href="using-trained-models.html">
+                <a href="../recommender/using-trained-models.html">
             
                     
                     Using models
@@ -301,9 +301,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.1.2" data-path="choosing-a-model.html">
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
             
-                <a href="choosing-a-model.html">
+                <a href="../recommender/choosing-a-model.html">
             
                     
                     Choosing a model
@@ -314,9 +314,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.1.3" data-path="coreml-deployment.html">
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
             
-                <a href="coreml-deployment.html">
+                <a href="../recommender/coreml-deployment.html">
             
                     
                     Deployment to Core ML
@@ -461,9 +461,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+        <li class="chapter " data-level="1.3.4" data-path="./">
             
-                <a href="../sound_classifier/">
+                <a href="./">
             
                     
                     Sound Classification
@@ -475,9 +475,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.1" data-path="how-it-works.html">
             
-                <a href="../sound_classifier/how-it-works.html">
+                <a href="how-it-works.html">
             
                     
                     How it works
@@ -488,9 +488,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+        <li class="chapter active" data-level="1.3.4.2" data-path="advanced-usage.html">
             
-                <a href="../sound_classifier/advanced-usage.html">
+                <a href="advanced-usage.html">
             
                     
                     Advanced Usage
@@ -501,9 +501,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="export-coreml.html">
             
-                <a href="../sound_classifier/export-coreml.html">
+                <a href="export-coreml.html">
             
                     
                     Deployment to Core ML
@@ -1173,7 +1173,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Deployment to Core ML</a>
+        <a href=".." >Advanced Usage</a>
     </h1>
 </div>
 
@@ -1188,53 +1188,46 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="deployment-to-core-ml"><a name="deployment-to-core-ml" class="plugin-anchor" href="#deployment-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deployment to Core ML</h1><p><strong><em>Note:</em></strong> <em>This functionality is only available on iOS 12+ and macOS 10.14+</em></p><p>The Turi Create Recommender Model is also available for use in your iOS/macOS
-apps as a custom model via exporting to Core ML. After creating your model in Turi
-Create, save it in Core ML format by calling <code>export_coreml</code> API as follows:</p><pre><code class="lang-python"><span class="hljs-comment"># assume my_recommender is the trained Turi Create Recommender Model</span>
-my_recommender.export_coreml(<span class="hljs-string">&quot;MyRecommender.mlmodel&quot;</span>)</code></pre>
-<p>After you drag and drop the exported Core ML model in your iOS app, it will look something like this:
-<img alt="Core ML Model Screenshot in Xcode" src="xcode-mlmodel-shot.png"></p><p>Before you can go ahead and use the recommender model in your app, you must
-drag and drop the relevant <code>.dylib</code> into your app. If you are writing an app 
-for a Mac or an iOS simulator, you would want the <code>x86_64</code> variant. 
-If you are writing an iOS app for the iPhone/iPad, you would want the
-<code>arm64</code> variant. 
-All the relevant <code>.dylib</code> files are available on the 
-<a href="https://github.com/apple/turicreate/releases" target="_blank">Github releases page</a> 
-starting with Turi Create 5.0b3, downloadable as <code>libRecommender.zip</code>.
-When you drag and drop the <code>.dylib</code>, you must copy all items and create folder 
-references. Here is a screenshot of what your selections on the dialog box 
-should look like.
-<img alt="libRecommender drag and drop" src="libRecommender-drag-drop-shot.png"></p><p>Now, do the following:</p><ul><li>Under <strong>Project &gt; Build Phases</strong>, add <code>libRecommender.dylib</code> to <strong>Copy Bundle Resources</strong>
-</li>
-<li>Under <strong>Project &gt; General</strong>, add <code>libRecommender.dylib</code> to <strong>Embedded Binaries</strong> and to <strong>Linked Frameworks and Libraries</strong>
-</li></ul>
-<p>Now, you are ready to start writing app code to use the recommender model you
-created in Turi Create (and exported to Core ML) in your iOS app. 
-As you can see above in the model screenshot in Xcode, you need to give the 
-model two inputs, <code>interactions</code> and <code>k</code>.</p><p>Here is some sample code to demonstrate how to use your exported custom model in a Swift
-iOS app.</p><ul><li>First, we identify the model we dragged and dropped and assign it to a variable. 
-</li></ul>
-<pre><code class="lang-swift"><span class="hljs-keyword">let</span> model = <span class="hljs-type">MyRecommender</span>();</code></pre>
-<ul><li>We now construct the two inputs we need to give to our model to get back some
-predictions.
-</li></ul>
-<pre><code class="lang-swift"><span class="hljs-keyword">let</span> interactions = <span class="hljs-type">NSMutableDictionary</span>();
-interactions[<span class="hljs-number">242</span>] = <span class="hljs-number">6.5</span>; 
-<span class="hljs-comment">// this signifies that the user interacted with item 242 and rated it 6.5 on their scale.</span>
-<span class="hljs-keyword">let</span> modelInput = <span class="hljs-type">MyRecommenderInput</span>(interactions: interactions <span class="hljs-keyword">as</span>! [<span class="hljs-type">Int64</span> : <span class="hljs-type">Double</span>], k: <span class="hljs-number">1</span>);</code></pre>
-<ul><li>Now that we have created the input to our <code>MyRecommender</code> model, we call <code>prediction</code>
-on it to look at the model predictions. 
-</li></ul>
-<pre><code class="lang-swift"><span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> modelOutput = <span class="hljs-keyword">try</span>? model.prediction(input: modelInput) <span class="hljs-keyword">else</span> {
-    <span class="hljs-built_in">fatalError</span>(<span class="hljs-string">&quot;Unexpected runtime error.&quot;</span>);
-}
-<span class="hljs-built_in">print</span>(modelOutput.probabilities);
-<span class="hljs-built_in">print</span>(modelOutput.recommendations);
-</code></pre>
-<p>The code sample above is just to give you an idea of how to use the recommender model.
-The apps that use recommender models can vary across lots of different use cases. 
-Examples include providing recommendations to the user for objects to purchase 
-in a game, recommendations to help users create their avatars, and so on.</p>
+                                <h1 id="advanced-usage"><a name="advanced-usage" class="plugin-anchor" href="#advanced-usage"><i class="fa fa-link" aria-hidden="true"></i></a>Advanced Usage</h1><h4 id="reusing-deep-features"><a name="reusing-deep-features" class="plugin-anchor" href="#reusing-deep-features"><i class="fa fa-link" aria-hidden="true"></i></a>Reusing Deep Features</h4><p>Often it is necessary to train and evaluate more than one instance of a model on the same dataset. For example this is required by both <a href="https://en.wikipedia.org/wiki/Cross-validation_%28statistics%29" target="_blank">K-Folds Cross Validation</a> and <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization" target="_blank">Hyperparameter Tuning</a>. In such cases much of the work across different runs can be reused.</p><p>Sound Classification is done using a <a href="how-it-works.html">three stage process</a>. The work done in the first two of these stages (signal preprocessing and VGGish feature extraction) will be identical across runs and can be reused.</p><p>The code below use the ESC-10 dataset from the <a href="./#introductory-example">Introductory Example</a> to do 5-folds cross validation:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+data = tc.load_sframe(<span class="hljs-string">&apos;./ESC-10&apos;</span>)
+
+<span class="hljs-comment"># Calculate the deep features just once.</span>
+data[<span class="hljs-string">&apos;deep_features&apos;</span>] = tc.sound_classifier.get_deep_features(data[<span class="hljs-string">&apos;audio&apos;</span>])
+
+accuracies = []
+<span class="hljs-keyword">for</span> cur_fold <span class="hljs-keyword">in</span> data[<span class="hljs-string">&apos;fold&apos;</span>].unique():
+    test_set = data.filter_by(cur_fold, <span class="hljs-string">&apos;fold&apos;</span>)
+    train_set = data.filter_by(cur_fold, <span class="hljs-string">&apos;fold&apos;</span>, exclude=<span class="hljs-keyword">True</span>)
+
+    model = tc.sound_classifier.create(train_set,
+                                       target=<span class="hljs-string">&apos;category&apos;</span>,
+                                       feature=<span class="hljs-string">&apos;deep_features&apos;</span>)
+
+    metrics = model.evaluate(test_set)
+    accuracies.append(metrics[<span class="hljs-string">&apos;accuracy&apos;</span>])
+
+print(<span class="hljs-string">&quot;Accuracies: {}&quot;</span>.format(accuracies))</code></pre>
+<p>This allows us to perform 5-fold cross validation more than twice as fast. For larger datasets the time savings will be even greater.</p><h4 id="tune-custom-neural-network-configuration"><a name="tune-custom-neural-network-configuration" class="plugin-anchor" href="#tune-custom-neural-network-configuration"><i class="fa fa-link" aria-hidden="true"></i></a>Tune Custom Neural Network Configuration</h4><p>The <a href="how-it-works.html#custom-neural-network-stage">custom neural network</a> used by the Sound Classifier is made up of a series of dense layers. Using more layers or more units in each layer can have a significant affect on accuracy. This will also affect the size of your model.</p><p>The <code>custom_layer_sizes</code> parameter allows you specify how many layers and the number of units in each layer. The default values for this parameter is <code>[100, 100]</code> which corresponds to two dense layers with a 100 units each.</p><p>Using a smaller number of overall units will result in a smaller model, potentially with minimal affects on accuracy. If you have a large amount of training data, you should get better accuracy by using more layers and/or more units.</p><p>The code below tries several different neural network configurations and reports the validation accuracy for each one:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+data = tc.load_sframe(<span class="hljs-string">&apos;./ESC-10&apos;</span>)
+
+<span class="hljs-comment"># Calculate the deep features just once.</span>
+data[<span class="hljs-string">&apos;deep_features&apos;</span>] = tc.sound_classifier.get_deep_features(data[<span class="hljs-string">&apos;audio&apos;</span>])
+
+<span class="hljs-comment"># Try several different neural network configurations</span>
+models = []
+network_configurations = ([<span class="hljs-number">100</span>, <span class="hljs-number">100</span>], [<span class="hljs-number">100</span>], [<span class="hljs-number">1000</span>, <span class="hljs-number">1000</span>], [<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>])
+<span class="hljs-keyword">for</span> cur_hyper_parameter <span class="hljs-keyword">in</span> network_configurations:
+    cur_model = tc.sound_classifier.create(data, target=<span class="hljs-string">&apos;category&apos;</span>,
+                                             custom_layer_sizes=cur_hyper_parameter,
+                                             feature=<span class="hljs-string">&apos;deep_features&apos;</span>)
+    models.append(cur_model)
+
+<span class="hljs-comment"># Report results</span>
+<span class="hljs-keyword">for</span> m, p <span class="hljs-keyword">in</span> zip(models, network_configurations):
+    print(<span class="hljs-string">&quot;{}, {}&quot;</span>.format(p, m.validation_accuracy))</code></pre>
+
                                 
                                 </section>
                             
@@ -1261,12 +1254,12 @@ in a game, recommendations to help users create their avatars, and so on.</p>
 
             
                 
-                <a href="choosing-a-model.html" class="navigation navigation-prev " aria-label="Previous page: Choosing a model">
+                <a href="how-it-works.html" class="navigation navigation-prev " aria-label="Previous page: How it works">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../image_classifier/" class="navigation navigation-next " aria-label="Next page: Image classification">
+                <a href="export-coreml.html" class="navigation navigation-next " aria-label="Next page: Deployment to Core ML">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1277,7 +1270,7 @@ in a game, recommendations to help users create their avatars, and so on.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.1.3","depth":3,"next":{"title":"Image classification","level":"1.3.2","depth":2,"path":"image_classifier/README.md","ref":"image_classifier/README.md","articles":[{"title":"Advanced Usage","level":"1.3.2.1","depth":3,"path":"image_classifier/advanced-usage.md","ref":"image_classifier/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.2.3","depth":3,"path":"image_classifier/export-coreml.md","ref":"image_classifier/export-coreml.md","articles":[]}]},"previous":{"title":"Choosing a model","level":"1.3.1.2","depth":3,"path":"recommender/choosing-a-model.md","ref":"recommender/choosing-a-model.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"recommender/coreml-deployment.md","mtime":"2018-11-30T20:05:35.067Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-11T18:53:55.756Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"next":{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"sound_classifier/export-coreml.md","ref":"sound_classifier/export-coreml.md","articles":[]},"previous":{"title":"How it works","level":"1.3.4.1","depth":3,"path":"sound_classifier/how-it-works.md","ref":"sound_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sound_classifier/advanced-usage.md","mtime":"2019-04-11T18:38:05.028Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-11T18:53:55.756Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
