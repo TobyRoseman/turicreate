@@ -1,3 +1,8 @@
+/* Copyright © 2019 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #ifndef MPS_NETWORKS_H_
 #define MPS_NETWORKS_H_
 
@@ -32,6 +37,7 @@ enum NetworkType {
   kSingleSoftMaxNet,
   kActivityClassifierNet,
   kSingleLstmNet,
+  kSoundClassifierNet,
   NUM_SUPPORTED_NETWORK_TYPES
 };
 
@@ -248,19 +254,19 @@ struct ActivityClassifierNetwork : public MPSNetwork {
     if (kLowLevelModeTrain == network_mode_){
         layers.push_back(new DropOutLayer("do2", {80, -1}, {n, hi, seq_len, conv_filters}, {n, ho, seq_len, conv_filters}));
     }
-      
+
     layers.push_back(new LstmLayer("lstm", {}, {n, hi, seq_len, conv_filters}, {n, ho, seq_len,lstm_h_size}));
     layers.push_back(new ConvLayer("dense0", {1, 1, lstm_h_size, fc_hidden, 1, 1, 1, 1},
                                    {n, hi, seq_len, lstm_h_size}, {n, ho, seq_len, fc_hidden}));
     layers.push_back(new BNLayer("bn", {}, {n, hi, seq_len, fc_hidden}, {n, ho, seq_len, fc_hidden}));
     layers.push_back(new ReLULayer("relu6", {0.f}, {n, hi, seq_len, fc_hidden}, {n, ho, seq_len, fc_hidden}));
-      
+
     if (kLowLevelModeTrain == network_mode_){
         layers.push_back(new DropOutLayer("do7", {50, -1}, {n, hi, seq_len, fc_hidden}, {n, ho, seq_len, fc_hidden}));
     }
-      
+
     layers.push_back(new ConvLayer("dense1", {1, 1, fc_hidden, co, 1, 1, 1, 1}, {n, hi, seq_len, fc_hidden}, {n, ho, seq_len, co}));
-      
+
     if (kLowLevelModeInference == network_mode_){
         layers.push_back(new SoftMaxLayer("softmax", {}, {n, ho, seq_len, co}, {n, ho, seq_len, co}));
     } else {
@@ -268,6 +274,15 @@ struct ActivityClassifierNetwork : public MPSNetwork {
     }
   }
 };
+
+struct SoundClassifierNetwork : public MPSNetwork {
+  SoundClassifierNetwork(const std::vector<int> &iparam,
+                            const float_array_map& config)
+      : MPSNetwork(config) {
+    //layers.push_back(new SoftMaxLayer("softmax", {}, {n, ho, seq_len, co}, {n, ho, seq_len, co}));
+  }
+};
+
 
 struct SingleFcNetwork : public MPSNetwork {
   SingleFcNetwork(const std::vector<int> &iparam, const float_array_map& config)
@@ -323,4 +338,4 @@ struct SingleLstmNetwork : public MPSNetwork {
 }  // namespace neural_net
 }  // namespace turi
 
-#endif
+#endif  // MPS_NETWORKS_H_

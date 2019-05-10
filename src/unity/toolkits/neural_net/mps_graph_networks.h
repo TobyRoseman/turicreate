@@ -1,3 +1,8 @@
+/* Copyright © 2019 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #ifndef MPS_GRAPH_NETWORKS_H_
 #define MPS_GRAPH_NETWORKS_H_
 
@@ -26,6 +31,7 @@ enum GraphNetworkType {
   kSingleBNGraphNet,
   kSingleMPGraphNet,
   kODGraphNet,
+  kSoundClassifierGraphNet,
   NUM_SUPPORTED_GRAPH_NETWORK_TYPES
 };
 
@@ -178,6 +184,30 @@ struct ODNetworkGraph : public MPSGraphNetwork {
   }
 };
 
+struct SoundClassifier : public MPSGraphNetwork {
+
+    SoundClassifier(const std::vector<int> &iparam,
+                 const float_array_map& config) {
+      
+      // XXX
+      //int num_classes = (int)get_array_map_scalar(config, "sc_num_classes", 10);  what's the 10?
+      //
+      //int num_dense_layers = (int)get_array_map_scalar(config, "sc_num_dense_layers", 10);  what's the 10?
+      //for(size_t i = 0; i < num_dense_layers; i++) {
+      //   layer_name = "dense%d_" % i;
+      //   layers.push_back(new FullyConnectedGraphLayer(
+      //   layers.push_back(new ReLUGraphLayer(, {}, {}, {}));
+      //}
+      //
+      //layers.push_back(new SoftmaxGraphLayer("softmax", {}, {}, {}));
+
+      layers.push_back(
+                       new MaxPoolGraphLayer("mp0", {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1})
+                       );
+    }
+
+};
+ 
 }  // namespace neural_net
 }  // namespace turi
 

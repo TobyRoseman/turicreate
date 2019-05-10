@@ -239,6 +239,16 @@ void BNGraphLayer::SetLearningRate(float lr) {
     [data setLearningRate:lr];
 }
 
+// TODO: Implement 
+void SoftmaxGraphLayer::InitFwd(MPSNNImageNode * _Nonnull src) {
+
+}
+
+// TODO: Implement
+void SoftmaxGraphLayer::InitBwd(MPSNNImageNode * _Nonnull src) {
+
+}
+ 
 // static
 std::vector<simd::float2> YoloLossGraphLayer::GetDefaultAnchorBoxes() {
   static constexpr simd::float2 default_anchor_boxes[] = {

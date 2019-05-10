@@ -9,6 +9,7 @@ Python API for MPS neural network backend
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import os as _os
 import ctypes as _ctypes
 import numpy as _np
@@ -24,6 +25,7 @@ class MpsGraphNetworkType(object):
     kSingleBNGraphNet   = 2
     kSingleMPGraphNet   = 3
     kODGraphNet         = 4
+    kSoundClassifierGraphNet = 5
 
 
 class MpsGraphMode(object):
@@ -38,12 +40,13 @@ class MpsLowLevelNetworkType(object):
     kSingleBNNet        = 2
     kSingleMPNet        = 3
     kSingle1DConvNet    = 4
-    kODNet              = 5
+    kODNet              = 5       # XXX: Remove this?
     kSingleDropOut      = 6
     kSingleFcNet        = 7
     kSingleSoftMaxNet   = 8
-    kActivityClassifierNet= 9
+    kActivityClassifierNet = 9
     kSingleLstmNet      = 10
+    kSoundClassifierNet = 11
 
 class MpsLowLevelMode(object):
     kLowLevelModeTrain      = 0

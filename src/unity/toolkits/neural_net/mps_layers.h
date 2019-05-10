@@ -91,6 +91,7 @@ enum LayerType {
   kMaxPool,
   kDropOut,
   kSoftMax,
+  kGSoftMax,
   kSmceLoss,
   kLSTM,
   kYoloLoss,
@@ -135,7 +136,7 @@ struct Layer {
   virtual void Update(MPSUpdater *_Nonnull updater, int lid) {}
   virtual void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) {}
 
-virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
+  virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
     int n = ishape[0];
     int h = ishape[1];
     int w = ishape[2];
@@ -427,10 +428,12 @@ struct SoftMaxLayer : public Layer {
     ishape = i_shape;
     oshape = o_shape;
   }
+  
   SoftMaxLayer() {
     // [op_forward dealloc];
     // [op_backward dealloc];
   }
+  
   void Forward(MPSImageBatch *_Nonnull src,
                id<MTLCommandBuffer> _Nonnull cb,
                bool is_train = true) override;

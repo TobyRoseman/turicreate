@@ -24,6 +24,8 @@ MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
     return new SingleDropOutNetwork(params, config);
   case kActivityClassifierNet:
     return new ActivityClassifierNetwork(params, config);
+  case kSoundClassifierNet:
+    return new SoundClassifierNetwork(params, config);
   case kSingleFcNet:
     return new SingleFcNetwork(params, config);
   case kSingleSoftMaxNet:

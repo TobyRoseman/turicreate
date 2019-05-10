@@ -34,6 +34,9 @@ std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
   case kODGraphNet:
     result.reset(new ODNetworkGraph(params, config));
     break;
+  case kSoundClassifierGraphNet:
+    result.reset(new SoundClassifier(params, config));
+    break;
   default:
     throw std::invalid_argument("Undefined network.");
   }

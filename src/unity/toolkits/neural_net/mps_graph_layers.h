@@ -185,6 +185,25 @@ struct MaxPoolGraphLayer : public GraphLayer {
   MPSCNNPoolingMaxGradientNode *_Nonnull node_bwd;
 };
 
+struct SoftmaxGraphLayer : public GraphLayer {
+  explicit SoftmaxGraphLayer(const std::string &layer_name,
+                             const std::vector<float> &fp,
+                             const std::vector<int> &i_shape,
+                             const std::vector<int> &o_shape) {
+    type = kGSoftMax;
+    name = layer_name;
+    fparams = fp;
+    state = nil;
+    ishape = i_shape;
+    oshape = o_shape;
+  }
+  ~SoftmaxGraphLayer() {}
+  void InitFwd(MPSNNImageNode * _Nonnull src) override;
+  void InitBwd(MPSNNImageNode * _Nonnull src) override;
+
+  MPSCNNSoftMaxNode *_Nonnull node_fwd;
+  MPSCNNSoftMaxGradientNode *_Nonnull node_bwd;
+};
 
 class YoloLossGraphLayer: public LossGraphLayer {
 public:
