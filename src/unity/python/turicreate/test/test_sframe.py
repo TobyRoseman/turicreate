@@ -2894,7 +2894,6 @@ class SFrameTest(unittest.TestCase):
         sf.sort('x')
 
     def test_sort(self):
-        #self.sort_n_rows(100)
         for i in range(1, 10):
             self.sort_n_rows(i)
 
