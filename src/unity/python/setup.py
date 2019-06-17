@@ -177,12 +177,12 @@ if __name__ == '__main__':
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
             "mxnet >= 1.1.0, < 1.2.0",
-            "coremltools==3.0b1",
-            "pillow >= 3.3.0",
-            "pandas >= 0.19.0",
-            "scipy >= 0.14.0",
+            "coremltools==2.1.0",
+            "pillow >= 5.2.0",
+            "pandas >= 0.23.2",
+            "scipy >= 1.1.0",
             "six >= 1.10.0",
             "resampy == 0.2.1",
-            "numpy"
+            "numpy >= 1.14.5"
         ],
     )
