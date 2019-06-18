@@ -173,9 +173,9 @@ if __name__ == '__main__':
         long_description=long_description,
         classifiers=classifiers,
         install_requires=[
-            "coremltools==2.1.0",
+            "coremltools==3.0b1",
             "decorator >= 4.0.9",
-            "mxnet >= 1.1.0, < 1.2.0",
+            "mxnet >= 1.4.0, <= 1.4.1",
             "numpy >= 1.14.5",
             "pandas >= 0.23.2",
             "pillow >= 5.2.0",

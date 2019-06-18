@@ -1,4 +1,4 @@
-coremltools==2.1.0
+coremltools==3.0b1
 scipy==1.2.1
 numpy==1.16.4
 cython==0.29.12
@@ -16,7 +16,7 @@ scikit-learn==0.20.3
 six==1.12.0
 statsmodels==0.9.0
 wheel==0.29.0
-mxnet==1.1.0
+mxnet==1.4.1
 UISoup==2.5.7
 pyobjc==5.2; sys_platform == 'darwin'
 future==0.17.1
