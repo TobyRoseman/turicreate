@@ -173,16 +173,16 @@ if __name__ == '__main__':
         long_description=long_description,
         classifiers=classifiers,
         install_requires=[
-            "decorator >= 4.0.9",
-            "prettytable == 0.7.2",
-            "requests >= 2.9.1",
-            "mxnet >= 1.1.0, < 1.2.0",
             "coremltools==2.1.0",
-            "pillow >= 5.2.0",
+            "decorator >= 4.0.9",
+            "mxnet >= 1.1.0, < 1.2.0",
+            "numpy >= 1.14.5"
             "pandas >= 0.23.2",
+            "pillow >= 5.2.0",
+            "prettytable == 0.7.2",
+            "resampy == 0.2.1",
+            "requests >= 2.9.1",
             "scipy >= 1.1.0",
             "six >= 1.10.0",
-            "resampy == 0.2.1",
-            "numpy >= 1.14.5"
         ],
     )
