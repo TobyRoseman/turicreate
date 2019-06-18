@@ -2391,7 +2391,10 @@ class SFrame(object):
             column_name = self.column_names()[i]
             df[column_name] = list(self[column_name])
             if len(df[column_name]) == 0:
-                df[column_name] = df[column_name].astype(self.column_types()[i])
+                column_type = self.column_types()[i]
+                if column_type in (array.array, type(None)):
+                    column_type = 'object'
+                df[column_name] = df[column_name].astype(column_type)
         return df
 
     def to_numpy(self):
