@@ -42,7 +42,7 @@ mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
-for f in `ls ../../env/include/$PYTHON_FULL_NAME/*`; do  
+for f in `ls -d ../../env/include/$PYTHON_FULL_NAME/*`; do
   ln -Ffs $f
 done
 popd
