@@ -282,7 +282,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
-        batch_size_each = 16
+        if batch_size_each > 16:
+            batch_size_each = 16
     # Note, this may slightly alter the batch size to fit evenly on the GPUs
     batch_size = max(num_mxnet_gpus, 1) * batch_size_each
     if verbose:
@@ -1164,8 +1165,14 @@ class ObjectDetector(_CustomModel):
         # Make sure we are removing the right layers
         assert (self._model[23].name == 'pool5' and
                 self._model[24].name == 'specialcrop5')
-        del net._children[24]
-        net._children[23] = op
+
+        try:
+            del net._children[24]
+            net._children[23] = op
+        except KeyError:
+            # Newer versions of MXNet use string keys
+            del net._children['24']
+            net._children['23'] = op
 
         s_ymap = net(s_image)
         mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])
