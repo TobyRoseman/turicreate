@@ -177,7 +177,7 @@ if __name__ == '__main__':
             "coremltools==3.0b3",
             "decorator >= 4.0.9",
             "mxnet >= 1.4.0, <= 1.4.1",
-            "numpy >= 1.14.5, < 1.15.0",
+            "numpy==1.16.4",
             "pandas >= 0.23.2",
             "pillow >= 5.2.0",
             "prettytable == 0.7.2",
