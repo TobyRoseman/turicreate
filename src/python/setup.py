@@ -176,7 +176,7 @@ if __name__ == '__main__':
         install_requires=[
             "coremltools==3.0b3",
             "decorator >= 4.0.9",
-            "mxnet >= 1.4.0, <= 1.4.1",
+            "mxnet==1.5.0",
             "numpy==1.16.4",
             "pandas >= 0.23.2",
             "pillow >= 5.2.0",
