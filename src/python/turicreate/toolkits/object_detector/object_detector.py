@@ -575,8 +575,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
 
         for batch in loader:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
+            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
 
             Ls = []
             Zs = []

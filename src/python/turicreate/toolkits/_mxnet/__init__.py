@@ -19,7 +19,7 @@ class _MXNetWrapper(object):
 
             version_tuple = tuple(int(x) for x in mxnet.__version__.split('.') if x.isdigit())
             lowest_version = (0, 11, 0)
-            not_yet_supported_version = (1, 4, 2)
+            not_yet_supported_version = (1, 5, 1)
             recommended_version_str = '1.4.1'
             if not (lowest_version <= version_tuple < not_yet_supported_version):
                 print('WARNING: You are using MXNet', mxnet.__version__, 'which may result in breaking behavior.')
