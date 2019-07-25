@@ -590,7 +590,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for L in Ls:
                     L.backward()
 
-            trainer.step(1)
+            trainer.step(1, ignore_stale_grad=True)
             cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
 
             update_progress(cur_loss, batch.iteration)
