@@ -135,14 +135,18 @@ if __name__ == '__main__':
 
         # Determine if AVX2 is supported
         try:
-            cmd_output = subprocess.check_output(['sysctl', '-n', 'hw.optional.avx2_0'])
+            p1 = subprocess.Popen(['sysctl', '-a'], stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(['grep', '-E', '^hw\.\w+.avx\w*: 1$'],
+                                  stdin=p1.stdout, stdout=subprocess.PIPE)
+            p1.stdout.close()
+            stdout = p2.communicate()[0]
         except:
             msg = (
                 "Error running: sysctl system command"
             )
             sys.stderr.write(msg)
             sys.exit(1)
-        if cmd_output.decode() != '1\n':
+        if cmd_output.decode() == b'':
             msg = (
                 "Error: Python 3.7 requires AVX2 support."
             )
