@@ -146,7 +146,7 @@ if __name__ == '__main__':
             )
             sys.stderr.write(msg)
             sys.exit(1)
-        if cmd_output.decode() == b'':
+        if stdout == b'':
             msg = (
                 "Error: Python 3.7 requires AVX2 support."
             )
