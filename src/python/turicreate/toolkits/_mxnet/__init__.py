@@ -26,7 +26,7 @@ class _MXNetWrapper(object):
                 recommended_version_str = '1.5.0'
             else:
                 not_yet_supported_version = (1, 2, 0)
-	        recommended_version_str = '1.1.0'
+                recommended_version_str = '1.1.0'
 
             if not (lowest_version <= version_tuple < not_yet_supported_version):
                 print('WARNING: You are using MXNet', mxnet.__version__, 'which may result in breaking behavior.')
