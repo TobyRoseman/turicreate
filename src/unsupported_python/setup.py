@@ -25,7 +25,7 @@ class InstallEngine(install):
 
         * Linux x86_64 (including WSL on Windows 10).
         * macOS 10.12+ x86_64.
-        * Python 2.7, 3.5, 3.6, or 3.7.
+        * Python 2.7, 3.5, 3.6, or 3.7 (macOS only).
 
         Other possible causes of this error are:
 
