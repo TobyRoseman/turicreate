@@ -201,14 +201,6 @@ namespace turi {
         return result;
       } // end of cauchy
 
-      inline bool bernoulli(const double p = double(0.5)) {
-        boost::bernoulli_distribution<double> dist(p);
-        mut.lock();
-        const double result(dist(discrete_rng));
-        mut.unlock();
-        return result;
-      } // end of bernoulli
-
       inline bool fast_bernoulli(const double p = double(0.5)) {
         boost::bernoulli_distribution<double> dist(p);
         mut.lock();

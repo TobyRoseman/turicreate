@@ -15,9 +15,7 @@
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
 
-#include <core/random/random.hpp>
 #include <memory>
-#include <tuple>
 
 namespace turi { namespace recsys {
 

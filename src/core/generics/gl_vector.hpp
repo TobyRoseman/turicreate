@@ -34,12 +34,9 @@ class gl_vector {
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  // static constexpr _inplace_values_allowed() { return sizeof(value_type) <= (sizeof(void*) - 1); }
-  // static constexpr _max_num_inplace_values() { return (sizeof(void*) - 1) / sizeof(value_type); }
-
  private:
 
-  /// The structur holding all the information
+  /// The structure holding all the information
   gl_vector_internal::_vstruct<value_type> *info;
 
  public:
