@@ -510,6 +510,7 @@ class ImageSimilarityModel(_CustomModel):
         import numpy as _np
         import coremltools as _cmt
         from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
+        from copy import deepcopy
         from .._mxnet._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
@@ -529,6 +530,21 @@ class ImageSimilarityModel(_CustomModel):
             input_name = feature_extractor.data_layer
             input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
 
+            # Convert the neuralNetworkClassifier to a neuralNetwork
+            feature_extractor_spec = feature_extractor.get_coreml_model().get_spec()
+            layers = deepcopy(feature_extractor_spec.neuralNetworkClassifier.layers)
+            for l in layers:
+                feature_extractor_spec.neuralNetwork.layers.append(l)
+
+            builder = _neural_network.NeuralNetworkBuilder(input_features, output_features,
+                                                           spec=feature_extractor_spec)
+
+            if self.model == 'resnet-50':
+                feature_layer = 'flatten0'
+            else:
+                feature_layer = 'flatten'
+            # builder.spec.neuralNetwork.layers[-3].output[0]
+            '''
             # Create a neural network
             builder = _neural_network.NeuralNetworkBuilder(
                 input_features, output_features, mode=None)
@@ -547,6 +563,7 @@ class ImageSimilarityModel(_CustomModel):
                                      builder=builder, verbose=False)
             feature_layer = feature_extractor.feature_layer
 
+            '''
         else:     # self.model == VisionFeaturePrint_Scene
             # Create a pipleline that contains a VisionFeaturePrint followed by a
             # neural network.
