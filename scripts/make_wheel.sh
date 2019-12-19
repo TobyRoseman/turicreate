@@ -362,6 +362,7 @@ package_wheel() {
 generate_docs() {
   echo -e "\n\n\n================= Generating Docs ================\n\n\n"
 
+  # API docs
   $PIP_EXECUTABLE install sphinx==1.6.5
   $PIP_EXECUTABLE install sphinx-bootstrap-theme
   $PIP_EXECUTABLE install numpydoc
@@ -373,7 +374,29 @@ generate_docs() {
   cp -R ${WORKSPACE}/src/python/doc/* .
   make clean SPHINXBUILD=${SPHINXBUILD}
   make html SPHINXBUILD=${SPHINXBUILD} || true
-  tar -czf ${TARGET_DIR}/turicreate_python_sphinx_docs.tar.gz *
+  mkdir -p ${TARGET_DIR}/docs
+  rsync -av ./build/html/* ${TARGET_DIR}/docs/api
+
+  # User guide
+  cd ${WORKSPACE}/userguide
+  npm install
+  npm run build
+  mkdir -p ${TARGET_DIR}/docs/userguide
+  rsync -av _book/ ${TARGET_DIR}/docs/userguide
+
+  # C++ docs
+  if [[ $OSTYPE == darwin* ]]; then
+      # This requires a case sensitive volume file system.
+      # Checking for that programmatically is hard.
+      echo "Skipping C++ documentation"
+  else
+      # XXX
+      echo "adfadf"
+  fi
+
+
+  # create doc.zip
+
 }
 
 set_build_number() {
