@@ -390,13 +390,26 @@ generate_docs() {
       # Checking for that programmatically is hard.
       echo "Skipping C++ documentation"
   else
-      # XXX
-      echo "adfadf"
+      echo "Building doxygen"
+      cd ${WORKSPACE}/deps/build
+      git clone https://github.com/doxygen/doxygen.git
+      cd doxygen/
+      git checkout Release_1_8_11
+      sed -i "s/10.5/10.9/g" CMakeLists.txt
+      mkdir build
+      cd build/
+      cmake -G "Unix Makefiles" ..
+      make
+
+      echo "Generating C++ docs"
+      cd ${WORKSPACE}
+      ${WORKSPACE}/deps/build/doxygen/build/bin/doxygen
+
+      mv doc/html/ target/docs/cpp
+      rmdir doc
   fi
 
-
-  # create doc.zip
-
+  # create doc.zip?
 }
 
 set_build_number() {
