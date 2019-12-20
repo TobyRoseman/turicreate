@@ -58,7 +58,7 @@ build_wheel_linux_python35:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
-    - apk add bash
+    - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
   artifacts:
