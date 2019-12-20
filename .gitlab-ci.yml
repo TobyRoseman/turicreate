@@ -19,6 +19,7 @@ build_wheel_debug_linux_python27:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
+    - apk add bash
     - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
   artifacts:
@@ -37,6 +38,7 @@ build_wheel_linux_python27:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
+    - apk add bash
     - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7 --skip_doc
   artifacts:
@@ -56,6 +58,7 @@ build_wheel_linux_python35:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
+    - apk add bash
     - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
   artifacts:
@@ -74,6 +77,7 @@ build_wheel_linux_python36:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
+    - apk add bash
     - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
   artifacts:
