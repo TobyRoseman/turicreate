@@ -379,8 +379,8 @@ generate_docs() {
 
   # User guide
   cd ${WORKSPACE}/userguide
-  npm install
-  npm run build
+  /usr/local/lib/node_modules/npm install
+  /usr/local/lib/node_modules/npm run build
   mkdir -p ${TARGET_DIR}/docs/userguide
   rsync -av _book/ ${TARGET_DIR}/docs/userguide
 
