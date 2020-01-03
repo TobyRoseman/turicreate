@@ -7,7 +7,7 @@
 # Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
 # runtime versions.
 
-FROM quay.io/pypa/manylinux2010_x86_64@sha256:191e8bc35089ce4ceda48224289b7475322ee6853faa4bf7d4b8e0d9c3b0358e
+FROM quay.io/pypa/manylinux2010_x86_64
 
 # Set env variables for tools to pick up
 ENV CC="gcc"
