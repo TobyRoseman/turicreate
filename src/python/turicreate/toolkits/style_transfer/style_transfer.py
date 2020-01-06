@@ -7,11 +7,10 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import time as _time
-from datetime import datetime as _datetime
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
@@ -20,13 +19,9 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
 import numpy as _np
-import math as _math
 import six as _six
 from .._mps_utils import (use_mps as _use_mps,
-                          mps_device_memory_limit as _mps_device_memory_limit,
-                          MpsGraphAPI as _MpsGraphAPI,
                           MpsStyleGraphAPI as _MpsStyleGraphAPI,
-                          MpsGraphNetworkType as _MpsGraphNetworkType,
                           MpsGraphMode as _MpsGraphMode,
                           mps_to_mxnet as _mps_to_mxnet,
                           mxnet_to_mps as _mxnet_to_mps)

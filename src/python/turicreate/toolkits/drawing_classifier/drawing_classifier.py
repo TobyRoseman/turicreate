@@ -20,7 +20,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from ..image_classifier._evaluation import Evaluation as _Evaluation
 from turicreate import extensions as _extensions
 from .. import _pre_trained_models
-from six.moves import reduce as _reduce
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -200,7 +199,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from ._model_architecture import Model as _Model
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     from .._mxnet import _mxnet_utils
-    import warnings
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(
@@ -532,7 +530,6 @@ class DrawingClassifier_legacy(_CustomModel):
         """
         import mxnet as _mx
         from .._mxnet._mxnet_to_coreml import _mxnet_converter
-        import coremltools as _coremltools
 
         batch_size = 1
         image_shape = (batch_size,) + (1, BITMAP_WIDTH, BITMAP_HEIGHT)

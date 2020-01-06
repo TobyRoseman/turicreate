@@ -12,7 +12,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
-from turicreate.toolkits import _coreml_utils
 
 USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
@@ -208,7 +207,6 @@ class OneShotObjectDetector(_CustomModel):
         --------
         >>> model.export_coreml('one_shot.mlmodel')
         """
-        import coremltools
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         short_description = _coreml_utils._mlmodel_short_description('Object Detector')
         if USE_CPP:

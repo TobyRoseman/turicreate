@@ -11,13 +11,10 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import time as _time
 import itertools as _itertools
-from datetime import datetime as _datetime
 
 import six as _six
 import turicreate as _tc
 import numpy as _np
-from threading import Thread as _Thread
-from six.moves.queue import Queue as _Queue
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
@@ -27,7 +24,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range,
                                                  _raise_error_if_not_iterable)
-from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
@@ -1047,7 +1043,6 @@ class ObjectDetector_legacy(_CustomModel):
             iou_threshold, confidence_threshold):
         import mxnet as _mx
         from .._mxnet._mxnet_to_coreml import _mxnet_converter
-        import coremltools
         from coremltools.models import datatypes, neural_network
 
         if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold

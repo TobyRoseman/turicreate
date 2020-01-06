@@ -9,9 +9,6 @@ from __future__ import absolute_import as _
 import numpy as _np
 import turicreate as _tc
 from .._mxnet import mxnet as _mx
-from six.moves.queue import Queue as _Queue
-from threading import Thread as _Thread
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 _TMP_COL_RANDOM_ORDER = '_random_order'
 

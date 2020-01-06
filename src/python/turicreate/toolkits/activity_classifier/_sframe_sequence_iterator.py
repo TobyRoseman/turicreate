@@ -10,7 +10,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from math import ceil as _ceil
-import time as _time
 from .._mxnet import mxnet as _mx
 import numpy as _np
 
