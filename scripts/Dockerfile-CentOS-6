@@ -28,6 +28,7 @@ RUN yum -y update && \
                glibc-devel \
                ccache \
                tk-devel \
+               npm \
                patch \
                rsync \
                git \
