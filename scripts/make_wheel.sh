@@ -379,6 +379,10 @@ generate_docs() {
 
   # User guide
   cd ${WORKSPACE}/userguide
+
+  # setup
+  # apt install nodejs npm doxygen
+
   npm install
   npm run build
   mkdir -p ${TARGET_DIR}/docs/userguide
@@ -390,20 +394,9 @@ generate_docs() {
       # Checking for that programmatically is hard.
       echo "Skipping C++ documentation"
   else
-      echo "Building doxygen"
-      cd ${WORKSPACE}/deps/build
-      git clone https://github.com/doxygen/doxygen.git
-      cd doxygen/
-      git checkout Release_1_8_11
-      sed -i "s/10.5/10.9/g" CMakeLists.txt
-      mkdir build
-      cd build/
-      cmake -G "Unix Makefiles" ..
-      make
-
-      echo "Generating C++ docs"
+      echo "Generating C++ documentation"
       cd ${WORKSPACE}
-      ${WORKSPACE}/deps/build/doxygen/build/bin/doxygen
+      doxygen
 
       mv doc/html/ target/docs/cpp
       rmdir doc
