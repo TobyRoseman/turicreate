@@ -15,12 +15,6 @@ from .._internal_utils import _mac_ver
 from .._pre_trained_models import VGGish
 
 
-# We need to disable this here to match behavior in the rest of TuriCreate
-from tensorflow.compat.v1 import disable_v2_behavior
-
-disable_v2_behavior()
-
-
 VGGish_instance = None
 
 

@@ -13,8 +13,6 @@ from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 
-_tf.disable_v2_behavior()
-
 
 class ODTensorFlowModel(TensorFlowModel):
     def __init__(
