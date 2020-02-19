@@ -14,8 +14,6 @@ import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 
-_tf.disable_v2_behavior()
-
 
 def define_tensorflow_variables(net_params, trainable=True):
     """

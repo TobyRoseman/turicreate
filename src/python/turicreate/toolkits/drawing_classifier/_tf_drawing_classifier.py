@@ -12,8 +12,6 @@ from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 
-_tf.disable_v2_behavior()
-
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
     def __init__(self, net_params, batch_size, num_classes):
