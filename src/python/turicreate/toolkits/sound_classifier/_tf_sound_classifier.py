@@ -26,15 +26,15 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.sess = _tf.Session(graph=self.sc_graph)
-        with self.sc_graph.as_default():
-            self.init_sound_classifier_graph(num_inputs, custom_layer_sizes)
+
+        #with self.sc_graph.as_default():
+        #    self.init_sound_classifier_graph(num_inputs, custom_layer_sizes)
 
     def __del__(self):
         self.sess.close()
         self.gpu_policy.stop()
 
     def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
-
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
@@ -89,6 +89,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         self.predictions = out
 
+        '''
         # Loss
         self.cost = _tf.reduce_mean(
             _tf.nn.softmax_cross_entropy_with_logits_v2(
@@ -109,6 +110,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         # Set variables to their initial values
         self.sess.run(_tf.global_variables_initializer())
+        '''
+
 
     def train(self, data, label):
         data_shape = data.shape[0]
@@ -217,24 +220,38 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
-        layers = net_params["data"].keys()
+        weights = net_params["data"]
 
-        for layer_name in layers:
-            new_layer_name = layer_name.replace("custom", "sound")
-            if "bias" in layer_name:
-                self.sess.run(
-                    _tf.assign(
-                        self.sc_graph.get_tensor_by_name(new_layer_name + ":0"),
-                        net_params["data"][layer_name],
+        import ipdb
+        ipdb.set_trace()
+        
+        custom_layer_sizes = [75, 100, 20]
+
+        with self.sc_graph.as_default():
+            self.x = _tf.placeholder("float", [None, 12288])
+
+            for i in range(len(custom_layer_sizes)):
+                weight_name = "sound_dense{}_weight".format(i)
+                bias_name = "sound_dense{}_bias".format(i)
+
+                cur_bias = weights[bias_name].astype('float32')
+
+                cur_shape = [int(x) for x in net_params["shapes"][weight_name]]
+                cur_weights = weights[weight_name].reshape(cur_shape).transpose(1, 0).astype('float32') 
+                # cur_input = 
+
+                if i == 0:
+                    curr_dense = _tf.nn.xw_plus_b(
+                        self.x, weights=cur_weights, biases=cur_bias
                     )
-                )
-            else:
-                curr_shape = [int(x) for x in net_params["shapes"][layer_name]]
-                self.sess.run(
-                    _tf.assign(
-                        self.sc_graph.get_tensor_by_name(new_layer_name + ":0"),
-                        net_params["data"][layer_name]
-                        .reshape(curr_shape)
-                        .transpose(1, 0),
+                else:
+                    curr_dense = _tf.nn.xw_plus_b(
+                        curr_dense, weights=cur_weights, biases=cur_bias
                     )
-                )
+
+                if i == (len(custom_layer_sizes) - 1):
+                    out = _tf.nn.softmax(curr_dense)
+                else:
+                    curr_dense = _tf.nn.relu(curr_dense)
+
+            self.predictions = out

@@ -275,9 +275,10 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             self.assertEqual(a, b)
 
     def test_save_and_load(self):
-        with TempDirectory() as filename:
-            self.model.save(filename)
-            new_model = tc.load_model(filename)
+        #with TempDirectory() as filename:
+        filename = '/tmp/foo'
+        self.model.save(filename)
+        new_model = tc.load_model(filename)
 
         self.assertEqual(self.model.feature, new_model.feature)
 
