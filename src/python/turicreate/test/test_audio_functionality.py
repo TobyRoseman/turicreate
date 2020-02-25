@@ -458,6 +458,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         )
         assert self.model.custom_layer_sizes == layer_sizes
 
+    '''
     # Remove the following two tests after #2949 is fixed!
 
     @pytest.mark.xfail(
@@ -471,6 +472,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     )
     def test_predict(self):
         pass
+    '''
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
