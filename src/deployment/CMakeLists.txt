@@ -17,18 +17,13 @@ if(APPLE AND HAS_COREML_CUSTOM_MODEL)
     DEAD_STRIP
   )
 
-  make_library(AudioPreprocessing
-    SOURCES
-      AudioPreprocessing.mm
-      ${_TC_COMMON_OBJECTS}
-      $<TARGET_OBJECTS:capi>
-    REQUIRES
-      ${ACCELERATE}
-      ${_TC_COMMON_REQUIREMENTS}
-    SHARED
-    SHARED_ALL_DEFINED
-    EXPORT_OSX_MAP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/symbol_exports.ver
-    DEAD_STRIP
+  set_target_properties(AudioPreprocessing PROPERTIES
+    FRAMEWORK TRUE
+    FRAMEWORK_VERSION A
+    MACOSX_FRAMEWORK_IDENTIFIER "AudioPreprocessing"
+    MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
+    PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/...
+    MACOSX_RPATH TRUE
   )
 
   # Adding sources here allows us to unit test these custom models in python.
