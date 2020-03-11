@@ -178,8 +178,8 @@ build_dylib_macos_10_15:
     - ./configure --no-visualization --no-python --no-remotefs
       --release-opt-for-size --with-capi --builder=xcode --no-pre-commit
     - cd release
-    - xcodebuild -j 8 -project Turi.xcodeproj/ -target Recommender -quiet
-    - xcodebuild -j 8 -project Turi.xcodeproj/ -target AudioPreprocessing -quiet
+    # Todo: once this debugged, remove `-j 1 -verbose`
+    - xcodebuild archive -j 1 -verbose -project Turi.xcodeproj/ -scheme AudioPreprocessing -destination="iOS Simulator" -archivePath /tmp/tobyTest/iossimulator.xcarchive -derivedDataPath /tmp/tobyTest/derivedData -sdk iphonesimulator SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
   artifacts:
     expire_in: 1 day
     paths:
