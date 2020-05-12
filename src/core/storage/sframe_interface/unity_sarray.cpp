@@ -1102,6 +1102,50 @@ flexible_type unity_sarray::mean() {
   }
 }
 
+flexible_type unity_sarray::median(bool approx) {
+  log_func_entry();
+
+  flex_type_enum type = dtype();
+  if(type != flex_type_enum::INTEGER && type != flex_type_enum::FLOAT) {
+    log_and_throw("Can not calculate median on non-numeric SArray.");
+  }
+  if (size() == 0) {
+    return flex_undefined();
+  }
+
+  flexible_type result;
+  if (!approx) {
+    // Sort
+    std::shared_ptr<unity_sframe> sf(new unity_sframe());
+    sf->add_column(std::static_pointer_cast<unity_sarray>(shared_from_this()), "content");
+    std::shared_ptr<unity_sframe_base> sorted_sf = sf->sort({"content"}, {1});
+    auto sorted_sa = gl_sarray(sorted_sf->select_column("content"));
+
+    // Determine median
+    if (size() % 2 == 0) {
+      flexible_type a = sorted_sa[(size()/2)-1];
+      flexible_type b = sorted_sa[size()/2];
+      result = (a+b)/2.;
+    } else {
+      result = sorted_sa[(size()/2)];
+    }
+    
+  } else {
+    // approximate/fast answer
+    turi::unity_sketch* sketch = new turi::unity_sketch();
+
+    sketch->construct_from_sarray(std::static_pointer_cast<unity_sarray>(shared_from_this()));
+    double foo = sketch->get_quantile(0.5);
+
+    #include <iostream>
+    std::cout<<"Result: "<<foo<<std::endl;
+    
+  }
+
+  return result;
+}
+
+  
 flexible_type unity_sarray::std(size_t ddof) {
   log_func_entry();
   flexible_type variance = this->var(ddof);

@@ -2294,6 +2294,15 @@ class SArray(object):
             else:
                 return self.__proxy__.mean()
 
+    def median(self, approximate=False):
+        """
+        XXXX
+        """
+        if not isinstance(approximate, bool):
+            raise("\"approximate\" must be a bool.")
+
+        return self.__proxy__.median(approximate)
+
     def std(self, ddof=0):
         """
         Standard deviation of all the values in the SArray.

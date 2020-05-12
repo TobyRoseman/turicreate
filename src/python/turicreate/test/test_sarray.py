@@ -1037,6 +1037,40 @@ class SArrayTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             a.mean()
 
+    def test_median(self):
+        import statistics
+
+        def check_correctness(l):
+            sa = SArray(l)
+            self.assertAlmostEqual(sa.median(), statistics.median(l))
+
+        def check_approximate_correctness(l):
+            sa = SArray(l)
+            exact = statistics.median(l)
+            approx = sa.median(approximate=False)
+            print("DEBUG: " + str((exact, approx)))
+            # The approximate answer should be within 5%
+            self.assertTrue(0.95 * exact <= approx <= 1.05 * exact)
+
+        check_correctness([12, 3, -1, 5])  # int, even length, approximate=False
+        check_correctness([10, 201, -3])   # int, odd length, approximate=False
+        #check_approximate_correctness([-4, 10, -1, -100])   # int, even length, approximate=True
+        check_correctness([1, 30, 99, 0, 10]) # int, odd length, approximate=True
+
+        check_correctness([2.3, -3.14])       # float, even length, approximate=False
+        check_correctness([-2.22, 0.9, 34.])  # float, odd length, approximate=False
+        # float, even length, approximate=True
+        # float, odd length, approximate=True
+
+        # Empty input
+        self.assertIsNone(SArray().median())
+
+        # Bad inputs
+        with self.assertRaises(TypeError):
+            SArray([1]).median(approximate="this is not a bool")
+        with self.assertRaises(RuntimeError):
+            SArray(["this", "is", "not", "numeric"]).median()
+
     def test_max_min_sum_mean_missing(self):
         # negative and positive
         s = SArray([-2, 0, None, None, None], int)

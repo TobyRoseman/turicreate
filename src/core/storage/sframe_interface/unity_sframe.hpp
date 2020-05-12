@@ -489,6 +489,7 @@ class unity_sframe : public unity_sframe_base {
                           const std::map<std::string,std::string>& join_keys,
                           const std::map<std::string,std::string>& alternative_names) override;
 
+  // XXX
   std::shared_ptr<unity_sframe_base> sort(const std::vector<std::string>& sort_keys,
                           const std::vector<int>& sort_ascending) override;
 
