@@ -1066,6 +1066,7 @@ class SArrayTest(unittest.TestCase):
         self.assertIsNone(SArray().median())
 
         # Bad inputs
+        # XXX: Test with Nones.
         with self.assertRaises(TypeError):
             SArray([1]).median(approximate="this is not a bool")
         with self.assertRaises(RuntimeError):

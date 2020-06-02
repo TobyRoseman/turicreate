@@ -1125,7 +1125,7 @@ flexible_type unity_sarray::median(bool approx) {
     if (size() % 2 == 0) {
       flexible_type a = sorted_sa[(size()/2)-1];
       flexible_type b = sorted_sa[size()/2];
-      result = (a+b)/2.;
+      result = (double) (a+b)/2.;
     } else {
       result = sorted_sa[(size()/2)];
     }
@@ -1135,10 +1135,17 @@ flexible_type unity_sarray::median(bool approx) {
     turi::unity_sketch* sketch = new turi::unity_sketch();
 
     sketch->construct_from_sarray(std::static_pointer_cast<unity_sarray>(shared_from_this()));
-    double foo = sketch->get_quantile(0.5);
+    const double quantile = 0.5;
+    double approx_median = sketch->get_quantile(quantile);
+
+    const double epsilon = 0.005; // XXX:
+    const double upper_bound = approx_median + (epsilon * size());
+    const double lower_bound = approx_median - (epsilon * size());
+
+    //turi::sketches::quantile_sketch<double> sketch(100000, 0.01);
 
     #include <iostream>
-    std::cout<<"Result: "<<foo<<std::endl;
+    std::cout<<"Upper: "<<upper_bound<<", Lower: "<<lower_bound<<std::endl;
     
   }
 
