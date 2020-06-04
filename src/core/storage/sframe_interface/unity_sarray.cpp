@@ -1134,7 +1134,8 @@ flexible_type unity_sarray::median(bool approx) {
     // approximate/fast answer
     turi::unity_sketch* sketch = new turi::unity_sketch();
 
-    sketch->construct_from_sarray(std::static_pointer_cast<unity_sarray>(shared_from_this()));
+    gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
+    sketch->construct_from_sarray(data);
     const double quantile = 0.5;
     double approx_median = sketch->get_quantile(quantile);
 
@@ -1143,10 +1144,33 @@ flexible_type unity_sarray::median(bool approx) {
     const double lower_bound = approx_median - (epsilon * size());
 
     //turi::sketches::quantile_sketch<double> sketch(100000, 0.01);
-
-    #include <iostream>
-    std::cout<<"Upper: "<<upper_bound<<", Lower: "<<lower_bound<<std::endl;
     
+    std::cout<<"Upper: "<<upper_bound<<", Lower: "<<lower_bound<<std::endl;
+    std::cout<<"Size: "<<size()<<std::endl;
+    
+    atomic<size_t> n_below_a = 0;
+    std::vector<flexible_type> candidates;
+    std::mutex candidate_lock;
+    auto count_median = [&](size_t, const std::shared_ptr<sframe_rows>& rows) {
+      for (const auto& row : *rows) {
+        const flexible_type x = row[0];
+        if(x < lower_bound) {
+          ++n_below_a;
+        } else if(x <= upper_bound) {
+          std::lock_guard<std::mutex> lg(candidate_lock);
+          candidates.push_back(x);
+          }
+      }
+      return false;
+    };
+    data.materialize_to_callback(count_median);
+
+    std::cout<<"\n\nn_below_a:"<<n_below_a<<std::endl;
+    int median_index = (size() / 2) - n_below_a;
+    std::cout<<"Median index:"<<median_index<<std::endl;
+    std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
+    
+    return candidates[median_index];
   }
 
   return result;
