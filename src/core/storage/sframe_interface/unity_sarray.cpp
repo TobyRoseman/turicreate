@@ -1144,9 +1144,6 @@ flexible_type unity_sarray::median(bool approx) {
     const double lower_bound = approx_median - (epsilon * size());
 
     //turi::sketches::quantile_sketch<double> sketch(100000, 0.01);
-
-    std::cout<<"Upper: "<<upper_bound<<", Lower: "<<lower_bound<<std::endl;
-    std::cout<<"Size: "<<size()<<std::endl;
     
     atomic<size_t> n_below_a = 0;
     std::vector<flexible_type> candidates;
@@ -1165,19 +1162,9 @@ flexible_type unity_sarray::median(bool approx) {
     };
     data.materialize_to_callback(count_median);
 
-    std::cout<<"\n\nn_below_a:"<<n_below_a<<std::endl;
     int median_index = (size() / 2) - n_below_a;
-    std::cout<<"Median index:"<<median_index<<std::endl;
     std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
-
-    if (size() % 2 == 0) {
-      flexible_type b = candidates[median_index];
-      std::nth_element(candidates.begin(), candidates.begin() + median_index - 1, candidates.end());
-      flexible_type a = candidates[median_index-1];
-      return (a+b)/2.;
-    } else {
-      return candidates[median_index];
-    }
+    result = candidates[median_index];
   }
 
   return result;
