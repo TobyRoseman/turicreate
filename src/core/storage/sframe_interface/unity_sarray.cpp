@@ -1162,7 +1162,7 @@ flexible_type unity_sarray::median(bool approx) {
     };
     data.materialize_to_callback(count_median);
 
-    int median_index = (size() / 2) - n_below_a;
+    size_t median_index = (size() / 2) - n_below_a;
     std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
     result = candidates[median_index];
   }
