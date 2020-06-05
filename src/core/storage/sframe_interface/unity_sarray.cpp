@@ -1113,38 +1113,20 @@ flexible_type unity_sarray::median(bool approx) {
     return flex_undefined();
   }
 
+  // Use sketch to get a fast approximate answer
+  turi::unity_sketch* sketch = new turi::unity_sketch();
+  const double epsilon = 0.005; // XXX:
+  gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
+  sketch->construct_from_sarray(data);
+  double approx_median = sketch->get_quantile(0.5);
+
   flexible_type result;
   if (!approx) {
-    // Sort
-    std::shared_ptr<unity_sframe> sf(new unity_sframe());
-    sf->add_column(std::static_pointer_cast<unity_sarray>(shared_from_this()), "content");
-    std::shared_ptr<unity_sframe_base> sorted_sf = sf->sort({"content"}, {1});
-    auto sorted_sa = gl_sarray(sorted_sf->select_column("content"));
-
-    // Determine median
-    if (size() % 2 == 0) {
-      flexible_type a = sorted_sa[(size()/2)-1];
-      flexible_type b = sorted_sa[size()/2];
-      result = (double) (a+b)/2.;
-    } else {
-      result = sorted_sa[(size()/2)];
-    }
-    
-  } else {
-    // approximate/fast answer
-    turi::unity_sketch* sketch = new turi::unity_sketch();
-
-    gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
-    sketch->construct_from_sarray(data);
-    const double quantile = 0.5;
-    double approx_median = sketch->get_quantile(quantile);
-
-    const double epsilon = 0.005; // XXX:
     const double upper_bound = approx_median + (epsilon * size());
     const double lower_bound = approx_median - (epsilon * size());
 
-    //turi::sketches::quantile_sketch<double> sketch(100000, 0.01);
-    
+    // Count the number below lower_bound.
+    // Store all values between lower_bound and upper_bound.
     atomic<size_t> n_below_a = 0;
     std::vector<flexible_type> candidates;
     std::mutex candidate_lock;
@@ -1156,7 +1138,7 @@ flexible_type unity_sarray::median(bool approx) {
         } else if(x <= upper_bound) {
           std::lock_guard<std::mutex> lg(candidate_lock);
           candidates.push_back(x);
-          }
+        }
       }
       return false;
     };
@@ -1165,6 +1147,8 @@ flexible_type unity_sarray::median(bool approx) {
     size_t median_index = (size() / 2) - n_below_a;
     std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
     result = candidates[median_index];
+  } else {
+    result = approx_median;
   }
 
   return result;
