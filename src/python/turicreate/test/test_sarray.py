@@ -1038,35 +1038,53 @@ class SArrayTest(unittest.TestCase):
             a.mean()
 
     def test_median(self):
-        import statistics
 
         def check_correctness(l):
             sa = SArray(l)
-            self.assertAlmostEqual(sa.median(), statistics.median(l))
+            if(len(l) % 2 == 1):
+                self.assertAlmostEqual(sa.median(), np.median(l))
+            else:
+                l = sorted(l)
+                self.assertTrue(l[(len(l)//2)-1] <= sa.median() <= l[len(l)//2])
 
         def check_approximate_correctness(l):
             sa = SArray(l)
-            exact = statistics.median(l)
-            approx = sa.median(approximate=False)
-            print("DEBUG: " + str((exact, approx)))
+            approx = sa.median(approximate=True)
             # The approximate answer should be within 5%
-            self.assertTrue(0.95 * exact <= approx <= 1.05 * exact)
+            if(len(l) % 2 == 1):
+                exact = np.median(l)
+                fuzzy_lower_bound = exact - (abs(exact) * 0.5)
+                fuzzy_upper_bound = exact + (abs(exact) * 0.5)
+            else:
+                l = sorted(l)
+                lower, upper = l[(len(l)//2)-1], l[len(l)//2]
+                fuzzy_lower_bound = lower - (abs(lower) * 0.5)
+                fuzzy_upper_bound = upper + (abs(upper) * 0.5)
+            self.assertTrue(fuzzy_lower_bound <= approx <= fuzzy_upper_bound)
 
-        check_correctness([12, 3, -1, 5])  # int, even length, approximate=False
-        check_correctness([10, 201, -3])   # int, odd length, approximate=False
-        #check_approximate_correctness([-4, 10, -1, -100])   # int, even length, approximate=True
-        check_correctness([1, 30, 99, 0, 10]) # int, odd length, approximate=True
+        check_correctness([10, 201, -3])   # int, odd length
+        check_correctness([12, 3, -1, 5])  # int, even length
+        check_approximate_correctness([1, 30, 99, 0, 10])  # int, odd length
+        check_approximate_correctness([-4, 10, -1, -100])  # int, even length
 
-        check_correctness([2.3, -3.14])       # float, even length, approximate=False
-        check_correctness([-2.22, 0.9, 34.])  # float, odd length, approximate=False
-        # float, even length, approximate=True
-        # float, odd length, approximate=True
+        check_correctness([-2.22, 0.9, 34.])  # float, odd length
+        check_correctness([2.3, -3.14])       # float, even length
+        check_approximate_correctness([99.9, -48.3, -14.3])     # float, odd length
+        check_approximate_correctness([-10.1, 14.8, 12.99, 0.]) # float, even length
+
+        # Bigger test
+        import random
+        a = [random.randint(-20000, 20000) for _ in range(10000)]
+        check_correctness(a)
+        check_approximate_correctness(a)
+        check_correctness(a + [1])
+        check_approximate_correctness(a + [1])
 
         # Empty input
         self.assertIsNone(SArray().median())
 
         # Bad inputs
-        # XXX: Test with Nones.
+        # XXX: Test SArray with Nones
         with self.assertRaises(TypeError):
             SArray([1]).median(approximate="this is not a bool")
         with self.assertRaises(RuntimeError):
