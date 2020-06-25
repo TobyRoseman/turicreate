@@ -111,13 +111,14 @@ def get_params(order):
 
 
 from itertools import permutations
-for cur_order in permutations(['i', 'c', 'f', 'o']):
-    l = model.layers[2]
-    l.set_weights(
-        get_params(cur_order)
-    )
+cur_order = list(permutations(['i', 'c', 'f', 'o']))[2]
 
-    x = np.zeros((32, 1000, 6))
-    y = model.predict(x)
-    print(cur_order, np.sum(y[0]))
+l = model.layers[2]
+l.set_weights(
+    get_params(cur_order)
+)
+
+x = np.ones((32, 1000, 6))
+y = model.predict(x)
+print(cur_order, np.sum(y[8]))
 
