@@ -88,46 +88,36 @@ l.set_weights(
     )
 
 
-order  = ['i', 'c', 'f', 'o']
 
-i2h_i = eval('net_params["lstm_i2h_%s_weight"]' % order[0])
-i2h_c = net_params["lstm_i2h_c_weight"]
-i2h_f = net_params["lstm_i2h_f_weight"]
-i2h_o = net_params["lstm_i2h_o_weight"]
-i2h = np.concatenate((i2h_i, i2h_c, i2h_f, i2h_o), axis=0)
+def get_params(order):
+    i2h = []
+    for i in order:
+        i2h.append(eval('net_params["lstm_i2h_%s_weight"]' % i))
+    i2h = np.concatenate(i2h, axis=0)
 
-h2h_i = net_params["lstm_h2h_i_weight"]
-h2h_c = net_params["lstm_h2h_c_weight"]
-h2h_f = net_params["lstm_h2h_f_weight"]
-h2h_o = net_params["lstm_h2h_o_weight"]
-h2h = np.concatenate((h2h_i, h2h_c, h2h_f, h2h_o), axis=0)
+    h2h = []
+    for i in order:
+        h2h.append(eval('net_params["lstm_h2h_%s_weight"]' % i))
+    h2h = np.concatenate(h2h, axis=0)
 
-bias = np.concatenate(
-    (
-        net_params["lstm_h2h_i_bias"],
-        net_params["lstm_h2h_c_bias"],
-        net_params["lstm_h2h_f_bias"],
-        net_params["lstm_h2h_o_bias"],
-    ), axis=0
-)
+    bias = []
+    for i in order:
+        bias.append(eval('net_params["lstm_h2h_%s_bias"]' % i))
+    bias = np.concatenate(bias, axis=0)
+
+    i2h = np.swapaxes(i2h, 1, 0)
+    h2h = np.swapaxes(h2h, 1, 0)
+    return (i2h, h2h, bias)
 
 
-from itertools import combinations
-
-#for cur_order in combinations(['i', 'c', 'f', 'o']):
-
-i2h = np.swapaxes(i2h, 1, 0)
-h2h = np.swapaxes(h2h, 1, 0)
-l = model.layers[2]
-l.set_weights(
-    (
-        i2h,
-        h2h,
-        bias
+from itertools import permutations
+for cur_order in permutations(['i', 'c', 'f', 'o']):
+    l = model.layers[2]
+    l.set_weights(
+        get_params(cur_order)
     )
-)
 
-x = np.zeros((32, 1000, 6))
-y = model.predict(x)
-print(np.sum(y[0]))
+    x = np.zeros((32, 1000, 6))
+    y = model.predict(x)
+    print(cur_order, np.sum(y[0]))
 
