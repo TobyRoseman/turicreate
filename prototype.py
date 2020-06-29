@@ -9,6 +9,7 @@ LSTM_H = 200
 CONV_H = 64
 prediction_window=50
 input_shape=(1000, 6)
+batch_size = 32
 seed=123
 
 model = keras.models.Sequential()
@@ -49,12 +50,11 @@ lstm = keras.layers.LSTM(
     units=LSTM_H,
     return_sequences=True,
     use_bias=True,
-
-    #recurrent_initializer="zeros"
-    
 )
-
 cur_outputs = lstm(cur_outputs)
+
+dense2 = keras.layers.Dense(128)
+cur_outputs = dense2(cur_outputs)
 
 model = keras.Model(inputs=inputs, outputs=cur_outputs)
 
@@ -118,7 +118,18 @@ l.set_weights(
     get_params(cur_order)
 )
 
-x = np.ones((32, 1000, 6))
+l = model.layers[3]
+l.set_weights(
+    (
+        net_params['dense0_weight'].reshape(128, 200).swapaxes(0, 1),
+        net_params['dense0_bias']
+    )
+)
+
+
+np.random.seed(123)
+x = np.random.rand(32, 1000, 6)
+
 y = model.predict(x)
 print(cur_order, np.sum(y[8]))
 
