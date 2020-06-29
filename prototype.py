@@ -56,6 +56,9 @@ cur_outputs = lstm(cur_outputs)
 dense2 = keras.layers.Dense(128)
 cur_outputs = dense2(cur_outputs)
 
+batch_norm = keras.layers.BatchNormalization()#trainable=False)
+cur_outputs = batch_norm(cur_outputs)
+
 model = keras.Model(inputs=inputs, outputs=cur_outputs)
 
 
@@ -126,10 +129,19 @@ l.set_weights(
     )
 )
 
+# Batch Norm
+l = model.layers[4]
+l.set_weights(
+    (net_params['bn_gamma'],
+     net_params['bn_beta'],
+     net_params['bn_running_mean'],
+     net_params['bn_running_var']
+    )
+)
+
 
 np.random.seed(123)
 x = np.random.rand(32, 1000, 6)
 
 y = model.predict(x)
-print(cur_order, np.sum(y[8]))
-
+print(y)
