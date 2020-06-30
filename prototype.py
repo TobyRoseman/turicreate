@@ -32,18 +32,12 @@ cur_outputs = dense(inputs)
 
 
 '''
-# if self.is_training:
 model.add(
     keras.layers.Dropout(
         rate=0.2,
         seed=seed,
     )
 )
-
-
-import tensorflow as tf
-from tensorflow import keras
-x = tf.random.normal([32, 20, 64])
 '''
 
 lstm = keras.layers.LSTM(
@@ -56,8 +50,16 @@ cur_outputs = lstm(cur_outputs)
 dense2 = keras.layers.Dense(128)
 cur_outputs = dense2(cur_outputs)
 
-batch_norm = keras.layers.BatchNormalization()#trainable=False)
+batch_norm = keras.layers.BatchNormalization()
 cur_outputs = batch_norm(cur_outputs)
+
+relu = keras.layers.ReLU()
+cur_outputs = relu(cur_outputs)
+
+# XXX: Dropout
+
+#dense3 = keras.layers.Dense(6)
+#cur_outputs = dense3(cur_outputs)
 
 model = keras.Model(inputs=inputs, outputs=cur_outputs)
 
@@ -68,17 +70,12 @@ def custom_loss(y_true, y_pred):
 
 
 optimizer = keras.optimizers.Adam(learning_rate=1e-3)
-'''
 
-'''
 model.compile(
     loss=keras.losses.categorical_crossentropy,
 
-
-
 )      
 '''
-
 
 with open('./net_params.pickle', 'rb') as f:
     net_params = pickle.load(f)
@@ -139,6 +136,14 @@ l.set_weights(
     )
 )
 
+'''
+l = model.layers[6]
+l.set_weights(
+    ( net_params['dense1_weight'].reshape((6,128)).swapaxes(0,1),
+      np.zeros((6,))
+     )
+)
+'''
 
 np.random.seed(123)
 x = np.random.rand(32, 1000, 6)
