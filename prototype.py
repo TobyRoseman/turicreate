@@ -53,13 +53,16 @@ cur_outputs = dense2(cur_outputs)
 batch_norm = keras.layers.BatchNormalization()
 cur_outputs = batch_norm(cur_outputs)
 
+# XXX: Dropout
+
 relu = keras.layers.ReLU()
 cur_outputs = relu(cur_outputs)
 
-# XXX: Dropout
+dense3 = keras.layers.Dense(6)
+cur_outputs = dense3(cur_outputs)
 
-#dense3 = keras.layers.Dense(6)
-#cur_outputs = dense3(cur_outputs)
+softmax = keras.layers.Softmax()
+cur_outputs = softmax(cur_outputs)
 
 model = keras.Model(inputs=inputs, outputs=cur_outputs)
 
@@ -136,14 +139,12 @@ l.set_weights(
     )
 )
 
-'''
 l = model.layers[6]
 l.set_weights(
-    ( net_params['dense1_weight'].reshape((6,128)).swapaxes(0,1),
+    ( net_params['dense1_weight'].reshape((6, 128)).swapaxes(0,1),
       np.zeros((6,))
      )
 )
-'''
 
 np.random.seed(123)
 x = np.random.rand(32, 1000, 6)
