@@ -30,15 +30,11 @@ dense = keras.layers.Conv1D(
 
 cur_outputs = dense(inputs)
 
-
-'''
-model.add(
-    keras.layers.Dropout(
-        rate=0.2,
-        seed=seed,
-    )
+dropout = keras.layers.Dropout(
+    rate=0.2,
+    seed=seed,
 )
-'''
+cur_outputs = dropout(cur_outputs)
 
 lstm = keras.layers.LSTM(
     units=LSTM_H,
@@ -53,10 +49,14 @@ cur_outputs = dense2(cur_outputs)
 batch_norm = keras.layers.BatchNormalization()
 cur_outputs = batch_norm(cur_outputs)
 
-# XXX: Dropout
-
 relu = keras.layers.ReLU()
 cur_outputs = relu(cur_outputs)
+
+dropout = keras.layers.Dropout(
+    rate=0.5,
+    seed=seed,
+)
+cur_outputs = dropout(cur_outputs)
 
 dense3 = keras.layers.Dense(6)
 cur_outputs = dense3(cur_outputs)
@@ -116,12 +116,12 @@ def get_params(order):
 from itertools import permutations
 cur_order = list(permutations(['i', 'c', 'f', 'o']))[2]
 
-l = model.layers[2]
+l = model.layers[3]
 l.set_weights(
     get_params(cur_order)
 )
 
-l = model.layers[3]
+l = model.layers[4]
 l.set_weights(
     (
         net_params['dense0_weight'].reshape(128, 200).swapaxes(0, 1),
@@ -130,7 +130,7 @@ l.set_weights(
 )
 
 # Batch Norm
-l = model.layers[4]
+l = model.layers[5]
 l.set_weights(
     (net_params['bn_gamma'],
      net_params['bn_beta'],
@@ -139,7 +139,7 @@ l.set_weights(
     )
 )
 
-l = model.layers[6]
+l = model.layers[8]
 l.set_weights(
     ( net_params['dense1_weight'].reshape((6, 128)).swapaxes(0,1),
       np.zeros((6,))
@@ -151,3 +151,6 @@ x = np.random.rand(32, 1000, 6)
 
 y = model.predict(x)
 print(y)
+
+
+print(y[10][5][1])   # 0.25368547
