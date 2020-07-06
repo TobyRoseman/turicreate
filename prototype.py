@@ -113,12 +113,9 @@ def get_params(order):
     return (i2h, h2h, bias)
 
 
-from itertools import permutations
-cur_order = list(permutations(['i', 'c', 'f', 'o']))[2]
-
 l = model.layers[3]
 l.set_weights(
-    get_params(cur_order)
+    get_params(('i', 'f', 'c', 'o'))
 )
 
 l = model.layers[4]
