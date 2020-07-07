@@ -20,6 +20,8 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 
+tc.config.set_num_gpus(0)   # XXX
+
 def _load_data(
     self,
     num_examples=1000,
