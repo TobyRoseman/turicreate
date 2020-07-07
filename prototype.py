@@ -58,7 +58,7 @@ dropout = keras.layers.Dropout(
 )
 cur_outputs = dropout(cur_outputs)
 
-dense3 = keras.layers.Dense(6)
+dense3 = keras.layers.Dense(6, use_bias=False)
 cur_outputs = dense3(cur_outputs)
 
 softmax = keras.layers.Softmax()
@@ -123,11 +123,14 @@ l.set_weights(
     )
 )
 
+#import ipdb; ipdb.set_trace()
+
+
 l = model.layers[8]
 l.set_weights(
-    ( net_params['dense1_weight'].reshape((6, 128)).swapaxes(0,1),
-      np.zeros((6,))
-     )
+    (
+        net_params['dense1_weight'].reshape((6, 128)).swapaxes(0,1),
+      )
 )
 
 np.random.seed(123)
