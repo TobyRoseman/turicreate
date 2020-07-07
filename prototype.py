@@ -67,19 +67,6 @@ cur_outputs = softmax(cur_outputs)
 model = keras.Model(inputs=inputs, outputs=cur_outputs)
 
 
-'''
-def custom_loss(y_true, y_pred):
-    pass
-
-
-optimizer = keras.optimizers.Adam(learning_rate=1e-3)
-
-model.compile(
-    loss=keras.losses.categorical_crossentropy,
-
-)      
-'''
-
 with open('./net_params.pickle', 'rb') as f:
     net_params = pickle.load(f)
 
@@ -151,3 +138,20 @@ print(y)
 
 
 print(y[10][5][1])   # 0.25368547
+
+import tensorflow as tf
+
+model.compile(
+    loss=tf.losses.categorical_crossentropy,
+    optimizer=keras.optimizers.Adam(learning_rate=1e-3),
+    sample_weight_mode="temporal"
+)
+
+with open('./feed_dict_train', 'br') as f:
+    feed_dict = pickle.load(f)
+
+loss = model.train_on_batch(
+    x=feed_dict['input'],
+    y=keras.utils.to_categorical(feed_dict['labels']),   # num_classes
+    sample_weight=np.reshape(feed_dict['weights'], (32,20))
+)
