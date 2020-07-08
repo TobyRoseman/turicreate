@@ -25,7 +25,7 @@ def _lazy_import_tensorflow():
     _tf = _minimal_package_import_check("tensorflow")
     return _tf
 
-
+# XXX: replace literals with constants
 # Constant parameters for the neural network
 CONV_H = 64
 LSTM_H = 200
@@ -183,8 +183,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
         result: Dictionary
             Loss per batch and probabilities
         """
-        #import ipdb; ipdb.set_trace()
-
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
             feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
@@ -197,6 +195,15 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 ),
             )
 
+
+        keras = _lazy_import_tensorflow().keras
+        loss = self.model.train_on_batch(
+            x=feed_dict['input'],
+            y=keras.utils.to_categorical(feed_dict['labels'], num_classes=self.num_classes),
+            sample_weight=_np.reshape(feed_dict['weights'], (32,20))
+        )
+        
+        '''
         _, loss, probs = self.sess.run(
             [self.train_op, self.loss_per_seq, self.probs],
             feed_dict={
@@ -211,7 +218,14 @@ class ActivityTensorFlowModel(TensorFlowModel):
         probabilities = _np.reshape(
             prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
         )
-        result = {"loss": _np.array(loss), "output": probabilities}
+        '''
+
+        prob = self.model.predict(feed_dict['input'])
+        probabilities = _np.reshape(
+            prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
+        )
+
+        result = {"loss": loss, "output": probabilities}
         return result
 
     def predict(self, feed_dict):
@@ -276,69 +290,52 @@ class ActivityTensorFlowModel(TensorFlowModel):
         tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
-        _tf = _lazy_import_tensorflow()
         tf_export_params = {}
-        with self.ac_graph.as_default():
-            tvars = _tf.trainable_variables()
-            tvars_vals = self.sess.run(tvars)
 
-        #import ipdb; ipdb.set_trace()
+        # First dense layer
+        l = self.model.layers[1]
+        tf_export_params["conv_weight"], tf_export_params["conv_bias"] = l.get_weights()
+        tf_export_params["conv_weight"] = _utils.convert_conv1d_tf_to_coreml(
+            tf_export_params["conv_weight"]
+        )
 
-        for var, val in zip(tvars, tvars_vals):
-            if "weight" in var.name:
-                if var.name.startswith("conv"):
+        # LSTM layer
+        l = self.model.layers[3]
+        i2h, h2h, bias = l.get_weights()
 
-                    tf_export_params[
-                        var.name.split(":")[0]
-                    ] = _utils.convert_conv1d_tf_to_coreml(val)
-                elif var.name.startswith("dense"):
-                    tf_export_params[
-                        var.name.split(":")[0]
-                    ] = _utils.convert_dense_tf_to_coreml(val)
-            elif var.name.startswith("rnn/lstm_cell/kernel"):
-                (
-                    i2h_i,
-                    i2h_c,
-                    i2h_f,
-                    i2h_o,
-                    h2h_i,
-                    h2h_c,
-                    h2h_f,
-                    h2h_o,
-                ) = _utils.convert_lstm_weight_tf_to_coreml(val, CONV_H)
-                tf_export_params["lstm_i2h_i_weight"] = i2h_i
-                tf_export_params["lstm_i2h_c_weight"] = i2h_c
-                tf_export_params["lstm_i2h_f_weight"] = i2h_f
-                tf_export_params["lstm_i2h_o_weight"] = i2h_o
-                tf_export_params["lstm_h2h_i_weight"] = h2h_i
-                tf_export_params["lstm_h2h_c_weight"] = h2h_c
-                tf_export_params["lstm_h2h_f_weight"] = h2h_f
-                tf_export_params["lstm_h2h_o_weight"] = h2h_o
-            elif var.name.startswith("rnn/lstm_cell/bias"):
-                (
-                    h2h_i_bias,
-                    h2h_c_bias,
-                    h2h_f_bias,
-                    h2h_o_bias,
-                ) = _utils.convert_lstm_bias_tf_to_coreml(val)
-                tf_export_params["lstm_h2h_i_bias"] = h2h_i_bias
-                tf_export_params["lstm_h2h_c_bias"] = h2h_c_bias
-                tf_export_params["lstm_h2h_f_bias"] = h2h_f_bias
-                tf_export_params["lstm_h2h_o_bias"] = h2h_o_bias
-            elif var.name.startswith("batch_normalization"):
-                tf_export_params["bn_" + var.name.split("/")[-1][0:-2]] = _np.array(val)
-            else:
-                tf_export_params[var.name.split(":")[0]] = _np.array(val)
+        biases = _np.split(bias, 4)
+        i2h = _np.swapaxes(i2h, 0, 1)
+        i2h = _np.split(i2h, 4)
+        h2h = _np.swapaxes(h2h, 0, 1)
+        h2h = _np.split(h2h, 4)
 
-        tvars = _tf.global_variables()
-        tvars_vals = self.sess.run(tvars)
-        for var, val in zip(tvars, tvars_vals):
-            if "moving_mean" in var.name:
-                tf_export_params["bn_running_mean"] = _np.array(val)
-            if "moving_variance" in var.name:
-                tf_export_params["bn_running_var"] = _np.array(val)
-        for layer_name in tf_export_params.keys():
-            tf_export_params[layer_name] = _np.ascontiguousarray(
-                tf_export_params[layer_name]
-            )
+        for i, c in enumerate('i', 'f', 'c', 'o'):
+            cur_bias_key = "lstm_h2h_%s_bias" % c
+            tf_export_params[cur_bias_key] = biases[i]
+
+            cur_i2h_key = "lstm_i2h_%s_weight" % c
+            tf_export_params[cur_i2h_key] = i2h[i]
+
+            cur_h2h_key = "lstm_h2h_%s_bias" % c
+            tf_export_params[cur_h2h_key] = h2h[i]
+
+        # Second dense layer
+        l = self.model.layers[4]
+        dense2_weights, tf_export_params['dense0_bias'] = l.get_weights()
+        dense2_weights = dense2_weights.swapaxes(1, 0).reshape(DENSE_H, 200, 1, 1)
+        tf_export_params['dense0_weight'] = dense2_weights
+
+        # Batch Norm weights
+        l = self.model.layers[5]
+        (tf_export_params['bn_gamma'],
+         tf_export_params['bn_beta'],
+         tf_export_params['bn_running_mean'],
+         tf_export_params['bn_running_var']) = l.get_weights()
+
+        # Last dense layer
+        l = self.model.layers[8]
+        dense3 = l.get_weights()
+        dense3 = dense3.swapaxes(1, 0).reshape(6, 128, 1, 1)
+        tf_export_params['dense1_weight'] = dense3
+
         return tf_export_params
