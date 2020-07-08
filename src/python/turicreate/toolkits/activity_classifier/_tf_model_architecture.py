@@ -244,6 +244,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             Loss per batch and probabilities (in case of validation data)
             Probabilities (in case only inputs are provided)
         """
+        # Convert input
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
             feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
@@ -256,28 +257,26 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 ),
             )
 
-        if len(feed_dict.keys()) == 1:
-            # Predict path
-            prob = self.model.predict(feed_dict['input'])
-            probabilities = _np.reshape(
-                prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
-            )
-            result = {"output": probabilities}
-        else:
-            loss, probs = self.sess.run(
-                [self.loss_per_seq, self.probs],
-                feed_dict={
-                    self.data: feed_dict["input"],
-                    self.target: feed_dict["labels"],
-                    self.weight: feed_dict["weights"],
-                    self.is_training: False,
-                },
-            )
-            prob = _np.array(probs)
-            probabilities = _np.reshape(
-                prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
-            )
-            result = {"loss": _np.array(loss), "output": probabilities}
+        # Generate predictions
+        prob = self.model.predict(feed_dict['input'])
+        probabilities = _np.reshape(
+            prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
+        )
+        result = {"output": probabilities}
+
+        if "labels" in feed_dict.keys():  # Validation data?
+            keras = _lazy_import_tensorflow().keras
+            labels = keras.utils.to_categorical(feed_dict['labels'], num_classes=self.num_classes)
+
+            loss = self.model.loss(y_true=labels, y_pred=prob)
+            loss = keras.backend.get_value(loss)
+
+            weights = feed_dict["weights"].reshape(loss.shape)
+            loss = loss * weights
+            loss = _np.sum(loss, axis=1)
+
+            result["loss"] = loss
+
         return result
 
     def export_weights(self):
@@ -309,14 +308,14 @@ class ActivityTensorFlowModel(TensorFlowModel):
         h2h = _np.swapaxes(h2h, 0, 1)
         h2h = _np.split(h2h, 4)
 
-        for i, c in enumerate('i', 'f', 'c', 'o'):
+        for i, c in enumerate(['i', 'f', 'c', 'o']):
             cur_bias_key = "lstm_h2h_%s_bias" % c
             tf_export_params[cur_bias_key] = biases[i]
 
             cur_i2h_key = "lstm_i2h_%s_weight" % c
             tf_export_params[cur_i2h_key] = i2h[i]
 
-            cur_h2h_key = "lstm_h2h_%s_bias" % c
+            cur_h2h_key = "lstm_h2h_%s_weight" % c
             tf_export_params[cur_h2h_key] = h2h[i]
 
         # Second dense layer
@@ -334,7 +333,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         # Last dense layer
         l = self.model.layers[8]
-        dense3 = l.get_weights()
+        dense3 = l.get_weights()[0]
         dense3 = dense3.swapaxes(1, 0).reshape(6, 128, 1, 1)
         tf_export_params['dense1_weight'] = dense3
 
