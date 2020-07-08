@@ -25,7 +25,6 @@ def _lazy_import_tensorflow():
     _tf = _minimal_package_import_check("tensorflow")
     return _tf
 
-# XXX: replace literals with constants
 # Constant parameters for the neural network
 CONV_H = 64
 LSTM_H = 200
@@ -144,7 +143,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         l = self.model.layers[4]
         l.set_weights(
             (
-                net_params['dense0_weight'].reshape(DENSE_H, 200).swapaxes(0, 1),
+                net_params['dense0_weight'].reshape(DENSE_H, LSTM_H).swapaxes(0, 1),
                 net_params['dense0_bias']
             )
         )
@@ -164,7 +163,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         l = self.model.layers[8]
         l.set_weights(
             (
-                net_params['dense1_weight'].reshape((6, 128)).swapaxes(0,1),
+                net_params['dense1_weight'].reshape((self.num_classes, DENSE_H)).swapaxes(0,1),
             )
         )
 
@@ -200,25 +199,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
         loss = self.model.train_on_batch(
             x=feed_dict['input'],
             y=keras.utils.to_categorical(feed_dict['labels'], num_classes=self.num_classes),
-            sample_weight=_np.reshape(feed_dict['weights'], (32,20))
+            sample_weight=_np.reshape(feed_dict['weights'], (self.batch_size, 20))
         )
-        
-        '''
-        _, loss, probs = self.sess.run(
-            [self.train_op, self.loss_per_seq, self.probs],
-            feed_dict={
-                self.data: feed_dict["input"],
-                self.target: feed_dict["labels"],
-                self.weight: feed_dict["weights"],
-                self.is_training: True,
-            },
-        )
-
-        prob = _np.array(probs)
-        probabilities = _np.reshape(
-            prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
-        )
-        '''
 
         prob = self.model.predict(feed_dict['input'])
         probabilities = _np.reshape(
@@ -321,7 +303,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Second dense layer
         l = self.model.layers[4]
         dense2_weights, tf_export_params['dense0_bias'] = l.get_weights()
-        dense2_weights = dense2_weights.swapaxes(1, 0).reshape(DENSE_H, 200, 1, 1)
+        dense2_weights = dense2_weights.swapaxes(1, 0).reshape(DENSE_H, LSTM_H, 1, 1)
         tf_export_params['dense0_weight'] = dense2_weights
 
         # Batch Norm weights
@@ -334,7 +316,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Last dense layer
         l = self.model.layers[8]
         dense3 = l.get_weights()[0]
-        dense3 = dense3.swapaxes(1, 0).reshape(6, 128, 1, 1)
+        dense3 = dense3.swapaxes(1, 0).reshape(self.num_classes, DENSE_H, 1, 1)
         tf_export_params['dense1_weight'] = dense3
 
         return tf_export_params
