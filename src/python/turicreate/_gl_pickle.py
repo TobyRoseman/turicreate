@@ -17,6 +17,9 @@ from . import (
 
 from .util import _get_aws_credentials as _util_get_aws_credentials, _cloudpickle
 
+from .util.cloudpickle_fast import CloudPickler
+
+
 import pickle as _pickle
 import uuid as _uuid
 import os as _os
@@ -142,7 +145,7 @@ def _get_gl_object_from_persistent_id(type_tag, gl_archive_abs_path):
     return obj
 
 
-class GLPickler(_cloudpickle.CloudPickler):
+class GLPickler(CloudPickler):
     def _to_abs_path_set(self, l):
         return set([_os.path.abspath(x) for x in l])
 
@@ -292,7 +295,7 @@ class GLPickler(_cloudpickle.CloudPickler):
             # Initialize the pickle file with cloud _pickle. Note, cloud pickle
             # takes a file handle for initialization.
             self.file = open(pickle_filename, "wb")
-            _cloudpickle.CloudPickler.__init__(self, self.file, protocol)
+            CloudPickler.__init__(self, self.file, protocol)
         except IOError as err:
             print("Turi create pickling error: %s" % err)
 
@@ -301,7 +304,7 @@ class GLPickler(_cloudpickle.CloudPickler):
             f.write("1.0")
 
     def dump(self, obj):
-        _cloudpickle.CloudPickler.dump(self, obj)
+        CloudPickler.dump(self, obj)
 
     def persistent_id(self, obj):
         """

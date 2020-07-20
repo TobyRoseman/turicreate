@@ -8,9 +8,8 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as tc
 import unittest
-from pickle import PicklingError
 import pickle
-import turicreate.util._cloudpickle as cloudpickle
+import turicreate.util._cloudpickle_fast as cloudpickle
 
 import pytest
 
@@ -25,7 +24,7 @@ class CloudPickleTest(unittest.TestCase):
         sk = sa.summary()
         m = tc.pagerank.create(g)
         for obj in [sa, sf, g, sk, m]:
-            self.assertRaises(PicklingError, lambda: cloudpickle.dumps(obj))
+            self.assertRaises(TypeError, lambda: cloudpickle.dumps(obj))
 
     def test_memoize_subclass(self):
         class A(object):
