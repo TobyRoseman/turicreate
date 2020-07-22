@@ -459,11 +459,11 @@ def _pickle_to_temp_location_or_memory(obj):
         the directory name. This directory will not have lifespan greater than
         that of unity_server.
         """
-    from . import _cloudpickle as cloudpickle
+    from ._cloudpickle_fast import dumps
 
     try:
         # try cloudpickle first and see if that works
-        lambda_str = cloudpickle.dumps(obj)
+        lambda_str = dumps(obj)
         return lambda_str
     except:
         pass

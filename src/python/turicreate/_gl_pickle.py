@@ -17,7 +17,7 @@ from . import (
 
 from .util import _get_aws_credentials as _util_get_aws_credentials, _cloudpickle
 
-from .util.cloudpickle_fast import CloudPickler
+from .util._cloudpickle_fast import CloudPickler
 
 
 import pickle as _pickle
