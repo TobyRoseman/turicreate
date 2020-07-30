@@ -1112,13 +1112,13 @@ class VectorLogisticRegressionTest(unittest.TestCase):
 class DictLogisticRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Logistic Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         np.random.seed(15)
         n, d = 100, 3
@@ -1134,7 +1134,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
         target[1] = 1
         self.sf["target"] = target
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ " + " + ".join(["X{}".format(i + 1) for i in range(d)])
         sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
@@ -1144,7 +1144,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
         self.stderr = list(sm_model.bse)
         self.yhat = list(sm_model.fittedvalues)
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.sf["dict"] = self.sf.apply(
             lambda row: {i: row["X{}".format(i + 1)] for i in range(d)}
